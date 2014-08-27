@@ -1,9 +1,9 @@
 {
-	"name": "alai-illuminateed/SwiftReachApi",
+	"name": "iluminate-education/swift-reach-api",
 	"type": "library",
 	"description": "PHP library to integrate with SwiftReach",
 	"keywords": ["php", "swiftreach"],
-	"homepage": "https://github.com/alai-illuminateed/SwiftReachApi",
+	"homepage": "https://github.com/illuminateeducation/swift_reach_api",
 	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",
