@@ -2,6 +2,7 @@
 namespace SwiftReachApi;
 
 use GuzzleHttp\Client;
+use SebastianBergmann\Exporter\Exception;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Voice\VoiceContactArray;
@@ -94,6 +95,30 @@ class SwiftReachApi
         );
 
         try{
+            /*
+            $ch = curl_init();
+            $args = array(
+                CURLOPT_URL => $url,
+                CURLOPT_FOLLOWLOCATION => TRUE,
+                CURLOPT_RETURNTRANSFER => TRUE,
+                CURLOPT_POST => TRUE,
+                CURLOPT_POSTFIELDS => $body,
+                CURLOPT_HTTPHEADER => $headers,
+            );
+            curl_setopt_array($ch, $args);
+            $res = curl_exec($ch);
+            if($res === false){
+                throw new Exception(curl_error($ch),curl_errno($ch));
+            }
+
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if($http_code >= 400 && $http_code < 500) {
+            }
+
+            $res_data = json_decode($res, true);
+            */
+
+
             return $this->getGuzzleClient()->post($url, array(
                     'config' => array(
                         'curl' => array(
@@ -110,6 +135,43 @@ class SwiftReachApi
         }
     }
 
+    public function get($url)
+    {
+        $headers = array(
+            'Content-type: application/json',
+            'SwiftAPI-Key: ' . $this->getApiKey(),
+            'Accept: application/json'
+        );
+
+        try{
+
+            return $this->getGuzzleClient()->get($url, array(
+                    'config' => array(
+                        'curl' => array(
+                            CURLOPT_RETURNTRANSFER => TRUE,
+                            CURLOPT_HTTPHEADER => $headers
+                        )
+                    )
+                ));
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+
+    public function getHotlineList()
+    {
+        $url = $this->getBaseUrl() . "/api/Hotlines/List";
+        try{
+            $response = $this->get($url);
+
+            return json_decode($response->getBody(),true);
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+
     /**
      * @param mixed $base_url
      */
@@ -119,6 +181,7 @@ class SwiftReachApi
         if(!filter_var($base_url, FILTER_VALIDATE_URL)){
             throw new SwiftReachException("'".$base_url."' is not a valid url.");
         }
+        return $this;
     }
 
     /**
@@ -135,6 +198,10 @@ class SwiftReachApi
     public function setApiKey($api_key)
     {
         $this->api_key = $api_key;
+        if(!$api_key){
+            throw new SwiftReachException("'".$api_key."' is not a valid api key.");
+        }
+        return $this;
     }
 
     /**
@@ -151,6 +218,7 @@ class SwiftReachApi
     public function setGuzzleClient($guzzle_client)
     {
         $this->guzzle_client = $guzzle_client;
+        return $this;
     }
 
     /**

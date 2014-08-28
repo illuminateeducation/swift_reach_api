@@ -117,7 +117,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     {
         //set up mock
         $mock = new Mock(array(
-            new Response(200, array(), Stream::factory('{"AutoReplays":1,"RequireResponse":false,"ValidResponses":"","EnableAnsweringMachineMessage":false,"ContentProfile":[{"SpokenLanguage":"English","TTY_Text":null,"VoiceItem":[{"VoiceItemType":1,"AudioSource":[{"$type":"SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core","VoiceCode":102746,"Content":"content that must be at least 10 characters long.","AutoGenerateVoice":true,"FileVersion":0,"AudioType":0}]}]}],"DefaultSpokenLanguage":"English","CallerID":"2012361344","CapacityLimit":0,"RingSeconds":60,"CongestionAttempts":2,"AutoRetries":1,"AutoRetriesInterval":3,"EnableWaterfall":false,"EnableAnsweringMachineDetection":false,"CreateStamp":"0001-01-01T00:00:00","ChangeStamp":"0001-01-01T00:00:00","LastUsed":"0001-01-01T00:00:00","CreatedByUser":null,"ChangedByUser":null,"Name":"API test message","Description":"description","VoiceCode":2304376,"VoiceType":14,"Visibility":0,"DeleteLocked":false}'))
+            new Response(200, array(), Stream::factory('{"AutoReplays":1,"RequireResponse":false,"ValidResponses":"","EnableAnsweringMachineMessage":false,"ContentProfile":[{"SpokenLanguage":"English","TTY_Text":null,"VoiceItem":[{"VoiceItemType":1,"AudioSource":[{"$type":"SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core","VoiceCode":123456,"Content":"content that must be at least 10 characters long.","AutoGenerateVoice":true,"FileVersion":0,"AudioType":0}]}]}],"DefaultSpokenLanguage":"English","CallerID":"2012361344","CapacityLimit":0,"RingSeconds":60,"CongestionAttempts":2,"AutoRetries":1,"AutoRetriesInterval":3,"EnableWaterfall":false,"EnableAnsweringMachineDetection":false,"CreateStamp":"0001-01-01T00:00:00","ChangeStamp":"0001-01-01T00:00:00","LastUsed":"0001-01-01T00:00:00","CreatedByUser":null,"ChangedByUser":null,"Name":"API test message","Description":"description","VoiceCode":9874561,"VoiceType":14,"Visibility":0,"DeleteLocked":false}'))
         ));
         $client = new Client();
         $client->getEmitter()->attach($mock);
@@ -128,7 +128,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertInstanceOf('\SwiftReachApi\Voice\SimpleVoiceMessage', $this->svm);
         $this->assertTrue(is_numeric($svm->getVoiceCode()));
-        $this->assertEquals("2304376", $svm->getVoiceCode());
+        $this->assertEquals("9874561", $svm->getVoiceCode());
     }
 
     /**
@@ -177,8 +177,10 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     //------------------------------------------------------------------------------------------------
+    // Create and send simple messages
+    //------------------------------------------------------------------------------------------------
 
-    private function createMockForSuccessfullSimpleVoiceSending()
+    private function createMockForSuccessfulSimpleVoiceSending()
     {
         $mock = new Mock(array(
             new Response(200, array(), Stream::factory('123456789'))
@@ -191,7 +193,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     public function testSendCreateSimpleVoiceMessage()
     {
         //set up mock
-        $this->createMockForSuccessfullSimpleVoiceSending();
+        $this->createMockForSuccessfulSimpleVoiceSending();
 
         // add voice code from previously created voice code
         $this->svm->setVoiceCode("123456");
@@ -205,7 +207,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     public function testMissingVoiceCodeSendCreateSimpleVoiceMessage()
     {
         //set up mock
-        $this->createMockForSuccessfullSimpleVoiceSending();
+        $this->createMockForSuccessfulSimpleVoiceSending();
 
         $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca);
 
@@ -218,7 +220,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     public function testNoNameSendCreateSimpleVoiceMessage()
     {
         //set up mock
-        $this->createMockForSuccessfullSimpleVoiceSending();
+        $this->createMockForSuccessfulSimpleVoiceSending();
 
         // add voice code from previously created voice code
         $svm = new SimpleVoiceMessage();
@@ -229,4 +231,45 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
     }
 
+    //------------------------------------------------------------------------------------------------
+    // get Hotline list
+    //------------------------------------------------------------------------------------------------
+
+    public function getSuccessfulHotlineList()
+    {
+        return array(array(file_get_contents(__DIR__."/../Data/hotline_list.json")));
+    }
+
+    /**
+     * @param $hotline_json
+     * @dataProvider getSuccessfulHotlineList
+     */
+    public function testGetHotlineList($hotline_json)
+    {
+        $mock = new Mock(array(
+            new Response(200, array(), Stream::factory($hotline_json))
+        ));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+        $hotline_list = $this->sra->getHotlineList();
+
+        $this->assertTrue(is_array($hotline_list));
+        $this->assertEquals(1, count($hotline_list));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testBadRequestGetHotlineList()
+    {
+        $mock = new Mock(array(
+            new Response(400, array(), Stream::factory(''))
+        ));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+        $hotline_list = $this->sra->getHotlineList();
+
+    }
 }

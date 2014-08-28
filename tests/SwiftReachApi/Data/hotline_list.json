@@ -1,0 +1,61 @@
+[{
+	"BusinessHours":[{
+		"HoursType":0,
+		"WeekDay":0,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":1,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":2,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":3,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":4,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":5,
+		"BeginTime":"",
+		"EndTime":""
+	},{
+		"HoursType":0,
+		"WeekDay":6,
+		"BeginTime":"",
+		"EndTime":""
+	}],
+	"HolidayHours":null,
+	"OpenSettings":{
+		"$type":"SwiftReach.Swift911.Core.Hotline.Hotline_Voice, SwiftReach.Swift911.Core",
+		"VoiceCode":643547,
+		"VoiceType":14,
+		"ConfigType":1
+	},
+	"ClosedSettings":{
+		"$type":"SwiftReach.Swift911.Core.Hotline.Hotline_Voice, SwiftReach.Swift911.Core",
+		"VoiceCode":643547,
+		"VoiceType":14,
+		"ConfigType":1
+	},
+	"<CustomerCode>k__BackingField":200201,
+	"<CreateStamp>k__BackingField":"7/26/2012 9:50:06 AM",
+	"<ChangeStamp>k__BackingField":"8/15/2012 11:29:02 AM",
+	"<CreatedByUser>k__BackingField":"sample",
+	"<ChangedByUser>k__BackingField":"sample",
+	"<PhoneNumber>k__BackingField":"5554789632",
+	"<Name>k__BackingField":"Hotline",
+	"<Code>k__BackingField":100007,
+	"<Active>k__BackingField":true,
+	"<JobCode>k__BackingField":0
+}]
