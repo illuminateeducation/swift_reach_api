@@ -48,10 +48,23 @@ class SwiftReachApi
         if(!$this->getApiKey()){
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
-
         if(!$this->getBaseUrl()){
             throw new SwiftReachException("Base url was not set.");
         }
+
+        //test for empty fields
+        $fields = array("Name", "Description", "UseTTS", "Content");
+        $missing_fields = array();
+        foreach ($fields as $field) {
+            $func = "get" . $field;
+            if ($message->$func() == "") {
+                $missing_fields[] = $field;
+            }
+        }
+        if (!empty($missing_fields)) {
+            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
+        }
+
 
         try{
             $response = $this->post($this->getBaseUrl().$path, $message->toJson());
@@ -77,7 +90,7 @@ class SwiftReachApi
         if(!$message->getName()){
             throw new SwiftReachException("The message name was not set or was blank.");
         }
-        $url = $this->getBaseUrl()."/api/Messages/Voice/Send/".urlencode($message->getName())."/".$message->getVoiceCode();
+        $url = $this->getBaseUrl()."/api/Messages/Voice/Send/".rawurlencode($message->getName())."/".$message->getVoiceCode();
 
         $response = $this->post($url, $contacts->toJson());
 

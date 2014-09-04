@@ -13,7 +13,7 @@ use SwiftReachApi\Interfaces\JsonSerialize;
 
 class SimpleVoiceMessage implements JsonSerialize
 {
-    CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:?\' ]/';
+    CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:?\'" ]/';
     /**
      * Name of the message
      * @var  string
@@ -59,7 +59,7 @@ class SimpleVoiceMessage implements JsonSerialize
     public function validateCallerId($caller_id)
     {
         // if caller id contains non-numeric values or is not ten digits long, fail
-        if(preg_match('/[^0-9]/',$caller_id) || strlen($caller_id) != 10){
+        if( (preg_match('/[^0-9]/',$caller_id) || strlen($caller_id) != 10) && $caller_id != ""){
             return false;
         }else{
             return true;
@@ -125,7 +125,7 @@ class SimpleVoiceMessage implements JsonSerialize
     public function setContent($content)
     {
         if(! $this->validateContent($content)){
-            throw new SwiftReachException("The message content contained characters that are not allowed or is shorter than 10 characters");
+            throw new SwiftReachException("The message content contained characters that match ".self::CONTENT_REGEX." and are invalid or is shorter than 10 characters");
         }
         $this->content = $content;
         return $this;
@@ -197,7 +197,7 @@ class SimpleVoiceMessage implements JsonSerialize
     public function setVoiceCode($voice_code)
     {
         if(!is_numeric($voice_code)){
-            throw new SwiftReachException("'".$voice_code."' must be a numerical value.");
+            throw new SwiftReachException("Voice code: '".$voice_code."' must be a numerical value.");
         }
 
         $this->voice_code = $voice_code;
