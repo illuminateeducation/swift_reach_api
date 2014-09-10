@@ -22,17 +22,16 @@ class CallReport
     /** @var  \SwiftReachApi\SwiftReachApi */
     private $sra;
 
-
     /** @var int */
     private $page_size = 20;
 
     /** @var int */
-    private $current_row = 0;
+    private $current_Page = 0;
 
     /**  @var string  */
     private $sort_field = "BeginStamp";
 
-    /** @var   */
+    /** @var string  */
     private $sort_direction = self::SORT_ASC;
 
     /**
@@ -86,18 +85,18 @@ class CallReport
     /**
      * @param int $current_row
      */
-    public function setCurrentRow($current_row)
+    public function setCurrentPage($current_page)
     {
-        $this->current_row = $current_row;
+        $this->current_Page = $current_page;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getCurrentRow()
+    public function getCurrentPage()
     {
-        return $this->current_row;
+        return $this->current_Page;
     }
 
     /**
@@ -254,7 +253,7 @@ class CallReport
     {
         $params = array(
             "Job code"          => $this->getJobCode(),
-            "Current Row"       => $this->getCurrentRow(),
+            "Current Row"       => ($this->getCurrentPage() * $this->getPageSize()),
             "Page Size"         => $this->getPageSize(),
             "Sort Field"        => rawurlencode($this->getSortField()),
             "Sorting Direction" => rawurlencode($this->getSortDirection())
@@ -269,7 +268,7 @@ class CallReport
     {
         $params = array(
             "Job code"          => $this->getJobCode(),
-            "Current Row"       => $this->getCurrentRow(),
+            "Current Row"       => ($this->getCurrentPage() * $this->getPageSize()),
             "Page Size"         => $this->getPageSize(),
             "Sort Field"        => rawurlencode($this->getSortField()),
             "Sorting Direction" => rawurlencode($this->getSortDirection()),

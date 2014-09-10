@@ -1,8 +1,9 @@
 <?php
 namespace SwiftReachApi;
 
+use Exception;
 use GuzzleHttp\Client;
-use SebastianBergmann\Exporter\Exception;
+use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Voice\VoiceContactArray;
@@ -53,7 +54,7 @@ class SwiftReachApi
         }
 
         //test for empty fields
-        $fields = array("Name", "Description", "UseTTS", "Content");
+        $fields = array("Name", "Description", "CallerId", "UseTTS", "Content");
         $missing_fields = array();
         foreach ($fields as $field) {
             $func = "get" . $field;
@@ -79,7 +80,7 @@ class SwiftReachApi
         return $message;
     }
 
-    public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts)
+    public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
     {
         if(!$message->getVoiceCode()){
             throw new SwiftReachException("No Voice Code was set.");
@@ -90,7 +91,24 @@ class SwiftReachApi
         if(!$message->getName()){
             throw new SwiftReachException("The message name was not set or was blank.");
         }
-        $url = $this->getBaseUrl()."/api/Messages/Voice/Send/".rawurlencode($message->getName())."/".$message->getVoiceCode();
+
+        if($hotline && preg_match('/[^0-9]/',$hotline) && strlen($hotline) != 10){
+            throw new SwiftReachException("Hotline numbers must be a valid 10 digit phone number");
+        }
+
+        $url_parts = array();
+
+        if($hotline){
+            $url_parts[] = "Publish";
+            $url_parts[] = rawurlencode($message->getName());
+            $url_parts[] = rawurlencode($message->getVoiceCode());
+            $url_parts[] = rawurlencode($hotline);
+        }else{
+            $url_parts[] = rawurlencode($message->getName());
+            $url_parts[] = rawurlencode($message->getVoiceCode());
+        }
+
+        $url = $this->getBaseUrl()."/api/Messages/Voice/Send/".implode("/", $url_parts);
 
         $response = $this->post($url, $contacts->toJson());
 
@@ -108,30 +126,6 @@ class SwiftReachApi
         );
 
         try{
-            /*
-            $ch = curl_init();
-            $args = array(
-                CURLOPT_URL => $url,
-                CURLOPT_FOLLOWLOCATION => TRUE,
-                CURLOPT_RETURNTRANSFER => TRUE,
-                CURLOPT_POST => TRUE,
-                CURLOPT_POSTFIELDS => $body,
-                CURLOPT_HTTPHEADER => $headers,
-            );
-            curl_setopt_array($ch, $args);
-            $res = curl_exec($ch);
-            if($res === false){
-                throw new Exception(curl_error($ch),curl_errno($ch));
-            }
-
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if($http_code >= 400 && $http_code < 500) {
-            }
-
-            $res_data = json_decode($res, true);
-            */
-
-
             return $this->getGuzzleClient()->post($url, array(
                     'config' => array(
                         'curl' => array(
@@ -143,8 +137,16 @@ class SwiftReachApi
                         )
                     )
             ));
-        }catch(\Exception $e){
-            throw $e;
+        }
+        catch(ClientException $e){
+            $json = $e->getResponse()->json();
+            if(isset($json["Message"])){
+                throw new SwiftReachException($json["Message"]);
+            }else{
+                throw new SwiftReachException($e->getMessage());
+            }
+        }catch(Exception $e){
+            throw new SwiftReachException($e->getMessage());
         }
     }
 
@@ -166,8 +168,15 @@ class SwiftReachApi
                         )
                     )
                 ));
-        }catch(\Exception $e){
-            throw $e;
+        }catch(ClientException $e){
+            $json = $e->getResponse()->json();
+            if(isset($json["Message"])){
+                throw new SwiftReachException($json["Message"]);
+            }else{
+                throw new SwiftReachException($e->getMessage());
+            }
+        }catch(Exception $e){
+            throw new SwiftReachException($e->getMessage());
         }
     }
 
@@ -175,13 +184,8 @@ class SwiftReachApi
     public function getHotlineList()
     {
         $url = $this->getBaseUrl() . "/api/Hotlines/List";
-        try{
-            $response = $this->get($url);
-
-            return json_decode($response->getBody(),true);
-        }catch(\Exception $e){
-            throw $e;
-        }
+        $response = $this->get($url);
+        return $response->json();
     }
 
 
