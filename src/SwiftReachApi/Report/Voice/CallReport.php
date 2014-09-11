@@ -203,13 +203,7 @@ class CallReport
         }
 
         $url = $this->sra->getBaseUrl()."/api/Alerts/Reports/Voice/Search/Count/".$this->getJobCode()."/".$field."/".rawurlencode($search_criteria);
-        try{
-            return (string)$this->sra->get($url)->getBody();
-        }catch(\Exception $e){
-            if($e->getCode() == "404"){
-                throw new SwiftReachException("Could not find a job with job code at: " . $url);
-            }
-        }
+        return (string)$this->sra->get($url)->getBody();
     }
 
     /**
@@ -223,13 +217,7 @@ class CallReport
         }
 
         $url = $this->sra->getBaseUrl()."/api/Alerts/Reports/Voice/Count/".$this->getJobCode();
-        try{
-            return (string)$this->sra->get($url)->getBody();
-        }catch(\Exception $e){
-            if($e->getCode() == "404"){
-                throw new SwiftReachException("Could not find a job with job code at: " . $url);
-            }
-        }
+        return (string)$this->sra->get($url)->getBody();
     }
 
     public function getRecords($search_field = null, $search_criteria = null)
