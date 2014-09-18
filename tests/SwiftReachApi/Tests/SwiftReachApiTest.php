@@ -2,6 +2,8 @@
 
 namespace SwiftReachApi\Tests;
 
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\Request;
 use GuzzleHttp\Stream\Stream;
 use SwiftReachApi\SwiftReachApi;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
@@ -176,6 +178,18 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $svm = $this->sra->createSimpleVoiceMessage($this->svm);
     }
 
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testMissingFieldsCreateSimpleVoiceMessage()
+    {
+        $svm = new SimpleVoiceMessage();
+        $svm->setVoiceCode("123456");
+
+        $job_id = $this->sra->createSimpleVoiceMessage($svm, $this->vca);
+    }
+
+
     //------------------------------------------------------------------------------------------------
     // Create and send simple messages
     //------------------------------------------------------------------------------------------------
@@ -204,7 +218,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException SwiftReachApi\Exceptions\SwiftReachException
      */
-    public function testMissingVoiceCodeSendCreateSimpleVoiceMessage()
+    public function testMissingVoiceCodeSendSimpleVoiceMessage()
     {
         //set up mock
         $this->createMockForSuccessfulSimpleVoiceSending();
@@ -217,7 +231,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException SwiftReachApi\Exceptions\SwiftReachException
      */
-    public function testNoNameSendCreateSimpleVoiceMessage()
+    public function testNoNameSendSimpleVoiceMessage()
     {
         //set up mock
         $this->createMockForSuccessfulSimpleVoiceSending();
@@ -228,8 +242,31 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $svm->setVoiceCode("123456");
 
         $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($svm, $this->vca);
-
     }
+
+    public function testHotlineSendSimpleVoiceMessage()
+    {
+        //set up mock
+        $this->createMockForSuccessfulSimpleVoiceSending();
+
+        // add voice code from previously created voice code
+        $this->svm->setVoiceCode("123456");
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca, "5551234785");
+    }
+
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testInvalidHotlineSendSimpleVoiceMessage()
+    {
+        //set up mock
+        $this->createMockForSuccessfulSimpleVoiceSending();
+
+        $this->svm->setVoiceCode("123456");
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca, "abc");
+    }
+
+
 
     //------------------------------------------------------------------------------------------------
     // get Hotline list
@@ -270,6 +307,67 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $client->getEmitter()->attach($mock);
         $this->sra->setGuzzleClient($client);
         $hotline_list = $this->sra->getHotlineList();
-
     }
+
+
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testGetWithJsonMessage()
+    {
+        $mock   = new Mock(
+            array(
+                new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))
+            )
+        );
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+        $hotline_list = $this->sra->getHotlineList();
+    }
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testPutWithJsonMessage()
+    {
+        $mock   = new Mock(
+            array(
+                new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))
+            )
+        );
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+
+        $svm = $this->sra->createSimpleVoiceMessage($this->svm);
+    }
+
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testPutAndGetException()
+    {
+        $mock   = new Mock();
+        $mock->addException(new RequestException("failed", new Request('GET', 'http://example.com')));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+
+        $svm = $this->sra->createSimpleVoiceMessage($this->svm);
+    }
+
+    /**
+     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testGetException()
+    {
+        $mock   = new Mock();
+        $mock->addException(new RequestException("failed", new Request('GET', 'http://example.com')));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+
+        $svm = $this->sra->getHotlineList();
+    }
+
 }

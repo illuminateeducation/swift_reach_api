@@ -88,6 +88,9 @@ class CallReport
     public function setCurrentPage($current_page)
     {
         $this->current_Page = $current_page;
+        if($this->current_Page < 0){
+            throw new SwiftReachException("Current page of CallReport cannot be set to a negative number.");
+        }
         return $this;
     }
 
@@ -106,6 +109,9 @@ class CallReport
     public function setPageSize($page_size)
     {
         $this->page_size = $page_size;
+        if($this->page_size < 0){
+            throw new SwiftReachException("Page size of CallReport cannot be set to a negative number.");
+        }
         return $this;
     }
 
@@ -264,6 +270,7 @@ class CallReport
             "Search Criteria"   => $search_criteria
         );
 
+        $this->validateField($search_field);
         $this->validateRecordListParams($params);
 
         return $this->sra->getBaseUrl() . "/api/Alerts/Reports/Voice/Search/" . implode("/", $params);

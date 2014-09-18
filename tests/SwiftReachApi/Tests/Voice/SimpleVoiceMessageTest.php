@@ -147,9 +147,13 @@ class SimpleVoiceMessageTest extends \PHPUnit_Framework_TestCase
             ->setUseTTS($a["UseTTS"])
             ->setContent($a["Content"]);
 
+        $json = $this->svm->toJson();
+        $this->assertJson($json);
 
-        $this->assertJson($this->svm->toJson());
-        $this->assertJsonStringEqualsJsonString($this->svm->toJson(), json_encode($a));
+        $x = json_decode($json, false);
+        foreach($x as $key =>$value){
+            $this->assertEquals($value, $a[$key]);
+        }
     }
 
 }
