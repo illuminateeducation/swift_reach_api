@@ -3,10 +3,14 @@
 namespace SwiftReachApi\Voice\AudioSource;
 
 
-class TtsFieldAudioSource extends AbstractAudioSource
+class TtsTextAudioSource extends AbstractAudioSource
 {
     protected $tts_text;
 
+    public function getAudioType()
+    {
+        return self::AUDIO_SOURCE_TTS_TEXT;
+    }
 
     public function toArray()
     {

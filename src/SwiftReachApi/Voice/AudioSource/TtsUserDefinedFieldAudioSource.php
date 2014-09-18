@@ -7,6 +7,10 @@ class TtsUserDefinedFieldAudioSource extends AbstractAudioSource
 {
     protected $field_key;
 
+    public function getAudioType()
+    {
+        return self::AUDIO_SOURCE_TTS_USER_DEFINED_FIELD;
+    }
 
     public function toArray()
     {
@@ -30,6 +34,7 @@ class TtsUserDefinedFieldAudioSource extends AbstractAudioSource
     public function setFieldKey($field_key)
     {
         $this->field_key = $field_key;
+        return $this;
     }
 
 

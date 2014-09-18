@@ -23,6 +23,11 @@ class TtsFieldAudioSource extends AbstractAudioSource {
     protected $tts_field;
 
 
+    public function getAudioType()
+    {
+        return self::AUDIO_SOURCE_TTS_FIELD;
+    }
+
     public function toArray()
     {
         return array(
