@@ -8,6 +8,8 @@
 
 namespace SwiftReachApi\Voice;
 
+use SwiftReachApi\Exceptions\SwiftReachException;
+
 
 /**
  * Class AbstractMessageProfile
@@ -79,6 +81,58 @@ class MessageProfile extends AbstractVoiceMessage
      * @var bool
      */
     protected $delete_locked = true;
+
+
+    public function validateVisibility($visibility)
+    {
+        return in_array($visibility, $this->getVisibilityTypes());
+    }
+
+    public function getVisibilityTypes()
+    {
+        return array(
+            self::VISIBILITY_TYPE_VISIBLE,
+            self::VISIBILITY_TYPE_HIDDEN,
+            self::VISIBILITY_TYPE_TEMPORARY,
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @param string $visibility
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+        if(!$this->validateVisibility($visibility)){
+            throw new SwiftReachException("'".$visibility."' is not a valid message profile visibility type");
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceType()
+    {
+        return $this->voice_type;
+    }
+
+    /**
+     * @param string $voice_type
+     */
+    public function setVoiceType($voice_type)
+    {
+        $this->voice_type = $voice_type;
+        return $this;
+    }
 
     /**
      * @return int
@@ -301,39 +355,7 @@ class MessageProfile extends AbstractVoiceMessage
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
 
-    /**
-     * @param string $visibility
-     */
-    public function setVisibility($visibility)
-    {
-        $this->visibility = $visibility;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVoiceType()
-    {
-        return $this->voice_type;
-    }
-
-    /**
-     * @param string $voice_type
-     */
-    public function setVoiceType($voice_type)
-    {
-        $this->voice_type = $voice_type;
-        return $this;
-    }
 
 
 
