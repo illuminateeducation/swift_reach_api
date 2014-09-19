@@ -5,6 +5,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Voice\VoiceContactArray;
 
@@ -183,11 +184,21 @@ class SwiftReachApi
 
     public function getHotlineList()
     {
-        $url = $this->getBaseUrl() . "/api/Hotlines/List";
-        $response = $this->get($url);
-        return $response->json();
+        return $this->get($this->getBaseUrl() . "/api/Hotlines/List")->json();
     }
 
+
+    /**
+     * @param $voice_code
+     * @return \SwiftReachApi\Voice\MessageProfile
+     */
+    public function getMessageProfile($voice_code)
+    {
+        $json = $this->get($this->getBaseUrl() . "/api/Messages/Voice/" . $voice_code)->json();
+        $mp = new MessageProfile();
+        $mp->populateFromArray($json);
+        return $mp;
+    }
 
     /**
      * @param mixed $base_url

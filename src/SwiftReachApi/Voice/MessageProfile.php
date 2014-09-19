@@ -17,9 +17,9 @@ use SwiftReachApi\Exceptions\SwiftReachException;
  */
 class MessageProfile extends AbstractVoiceMessage
 {
-    CONST VISIBILITY_TYPE_VISIBLE       = "Visible";
-    CONST VISIBILITY_TYPE_HIDDEN        = "Hidden";
-    CONST VISIBILITY_TYPE_TEMPORARY     = "Temporary";
+    CONST VISIBILITY_TYPE_VISIBLE = "Visible";
+    CONST VISIBILITY_TYPE_HIDDEN = "Hidden";
+    CONST VISIBILITY_TYPE_TEMPORARY = "Temporary";
 
     /**
      * @var int
@@ -49,6 +49,12 @@ class MessageProfile extends AbstractVoiceMessage
      * @var bool
      */
     protected $enable_answering_machine_detection = false;
+
+    /**
+     * @var VoiceAlertProfile
+     */
+    protected $content_profile;
+
     /**
      * @var timestamp
      */
@@ -83,6 +89,32 @@ class MessageProfile extends AbstractVoiceMessage
     protected $delete_locked = true;
 
 
+    public function populateFromArray($a)
+    {
+        $special_functions = array(
+            "CallerID" => "setCalledId",
+            "ContentProfile" => "populateContentProfileFromArray"
+        );
+
+        foreach ($a as $key => $value) {
+            if (in_array($key, array_keys($special_functions))) {
+                $set_method = $special_functions[$key];
+            } else {
+                $set_method = "set" . $key;
+            }
+
+            if (method_exists($this, $set_method)) {
+                $this->$set_method($value);
+            }
+        }
+    }
+
+    private function populateContentProfileFromArray($a){
+        $content_profile = new VoiceAlertProfile();
+        $content_profile->populateFromArray($a);
+        $this->setContentProfile($content_profile);
+    }
+
     public function validateVisibility($visibility)
     {
         return in_array($visibility, $this->getVisibilityTypes());
@@ -111,8 +143,8 @@ class MessageProfile extends AbstractVoiceMessage
     public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
-        if(!$this->validateVisibility($visibility)){
-            throw new SwiftReachException("'".$visibility."' is not a valid message profile visibility type");
+        if (!$this->validateVisibility($visibility)) {
+            throw new SwiftReachException("'" . $visibility . "' is not a valid message profile visibility type");
         }
         return $this;
     }
@@ -305,6 +337,24 @@ class MessageProfile extends AbstractVoiceMessage
     }
 
     /**
+     * @return VoiceAlertProfile
+     */
+    public function getContentProfile()
+    {
+        return $this->content_profile;
+    }
+
+    /**
+     * @param VoiceAlertProfile $content_profile
+     */
+    public function setContentProfile($content_profile)
+    {
+        $this->content_profile = $content_profile;
+        return $this;
+    }
+
+
+    /**
      * @return boolean
      */
     public function isEnableWaterfall()
@@ -355,8 +405,4 @@ class MessageProfile extends AbstractVoiceMessage
         return $this;
     }
 
-
-
-
-
-} 
+}

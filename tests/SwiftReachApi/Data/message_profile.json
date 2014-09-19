@@ -1,0 +1,38 @@
+{
+	"AutoReplays":1,
+	"RequireResponse":false,
+	"ValidResponses":"",
+	"EnableAnsweringMachineMessage":false,
+	"ContentProfile":[{
+		"SpokenLanguage":"English",
+		"TTY_Text":"This is what I want to show up on a TTY",
+		"VoiceItem":[{
+			"VoiceItemType":1,
+			"AudioSource":[{
+				"$type":"SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_TEXT, SwiftReach.Swift911.Core",
+				"TTSText":"This is the message.",
+				"AudioType":2
+			}]
+		}]
+	}],
+	"DefaultSpokenLanguage":"English",
+	"CallerID":"2012361344",
+	"CapacityLimit":0,
+	"RingSeconds":60,
+	"CongestionAttempts":3,
+	"AutoRetries":0,
+	"AutoRetriesInterval":3,
+	"EnableWaterfall":false,
+	"EnableAnsweringMachineDetection":false,
+	"CreateStamp":"0001-01-01T00:00:00",
+	"ChangeStamp":"0001-01-01T00:00:00",
+	"LastUsed":"0001-01-01T00:00:00",
+	"CreatedByUser":null,
+	"ChangedByUser":null,
+	"Name":"API Voice Message",
+	"Description":"created by api",
+	"VoiceCode":123456,
+	"VoiceType":14,
+	"Visibility":0,
+	"DeleteLocked":false
+}

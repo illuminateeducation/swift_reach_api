@@ -26,6 +26,7 @@ class VoiceAudioSource extends AbstractAudioSource
         );
     }
 
+
     /**
      * @return boolean
      */

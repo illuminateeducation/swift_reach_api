@@ -1,0 +1,1 @@
+{"SpokenLanguage":"English","TTY_Text":"tty text","VoiceItem":[{"VoiceItemType":1,"AudioSource":[{"$type":"SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core","VoiceCode":104376,"Content":"test test test test","AutoGenerateVoice":true,"FileVersion":0,"AudioType":0}]}]}

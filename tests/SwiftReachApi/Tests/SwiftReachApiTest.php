@@ -71,7 +71,24 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $this->vca->addContact($this->contact1)->addContact($this->contact2);
     }
 
+    private function mockResponses($responses)
+    {
+        $mock   = new Mock($responses);
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+    }
+    private function mockExceptions($exceptions)
+    {
+        $mock   = new Mock();
+        foreach($exceptions as $e){
+            $mock->addException($e);
+        }
 
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+        $this->sra->setGuzzleClient($client);
+    }
 
     public function testConstructor()
     {
@@ -108,7 +125,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testInvalidBaseUrl()
     {
@@ -151,7 +168,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testMissingApiKeyCreateSimpleVoiceMessage()
     {
@@ -165,7 +182,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testMissingBaseUrlCreateSimpleVoiceMessage()
     {
@@ -179,7 +196,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testMissingFieldsCreateSimpleVoiceMessage()
     {
@@ -216,7 +233,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testMissingVoiceCodeSendSimpleVoiceMessage()
     {
@@ -229,7 +246,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testNoNameSendSimpleVoiceMessage()
     {
@@ -255,7 +272,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testInvalidHotlineSendSimpleVoiceMessage()
     {
@@ -311,63 +328,46 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testGetWithJsonMessage()
     {
-        $mock   = new Mock(
-            array(
-                new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))
-            )
-        );
-        $client = new Client();
-        $client->getEmitter()->attach($mock);
-        $this->sra->setGuzzleClient($client);
+        $this->mockResponses([new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))]);
         $hotline_list = $this->sra->getHotlineList();
     }
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testPutWithJsonMessage()
     {
-        $mock   = new Mock(
-            array(
-                new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))
-            )
-        );
-        $client = new Client();
-        $client->getEmitter()->attach($mock);
-        $this->sra->setGuzzleClient($client);
-
+        $this->mockResponses([new Response(400, array(), Stream::factory('{"Message":"Test Error Message"}'))]);
         $svm = $this->sra->createSimpleVoiceMessage($this->svm);
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testPutAndGetException()
     {
-        $mock   = new Mock();
-        $mock->addException(new RequestException("failed", new Request('GET', 'http://example.com')));
-        $client = new Client();
-        $client->getEmitter()->attach($mock);
-        $this->sra->setGuzzleClient($client);
-
+        $this->mockExceptions([new RequestException("failed", new Request('GET', 'http://example.com'))]);
         $svm = $this->sra->createSimpleVoiceMessage($this->svm);
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testGetException()
     {
-        $mock   = new Mock();
-        $mock->addException(new RequestException("failed", new Request('GET', 'http://example.com')));
-        $client = new Client();
-        $client->getEmitter()->attach($mock);
-        $this->sra->setGuzzleClient($client);
-
+        $this->mockExceptions([new RequestException("failed", new Request('GET', 'http://example.com'))]);
         $svm = $this->sra->getHotlineList();
     }
+
+    public function testGetMessageProfile()
+    {
+        $this->mockResponses([new Response(200, array(), Stream::factory(file_get_contents(__DIR__."/../Data/message_profile.json")))]);
+        $voice_code = 123456;
+        $this->assertEquals(get_class($this->sra->getMessageProfile($voice_code)),  'SwiftReachApi\Voice\MessageProfile');
+    }
+
 
 }

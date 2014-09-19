@@ -19,6 +19,8 @@ implements ArraySerialize
     const AUDIO_SOURCE_TTS_TEXT                 = "audio_source_tts_text";
     const AUDIO_SOURCE_TTS_USER_DEFINED_FIELD   = "audio_source_tts_user_defined_field";
 
+    abstract public function getAudioType();
+
     public function getAudioSourceTypes()
     {
         return array(
@@ -29,7 +31,18 @@ implements ArraySerialize
         );
     }
 
-    abstract public function getAudioType();
+    public function populateFromArray($a)
+    {
+        $fields = get_object_vars($this);
+        unset($fields["AudioType"]);
+
+        foreach($fields as $f){
+            if(isset($a[$f])){
+                $method = "set".$f;
+                $this->$method($a[$f]);
+            }
+        }
+    }
 
 
 } 

@@ -10,6 +10,7 @@ namespace SwiftReachApi\Tests\Voice;
 
 use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Voice\VoiceAlertProfile;
 
 class MessageProfileTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,17 +26,17 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
     {
         //vals
         $a = array(
-            "AutoRetries" => 5,
+            "AutoRetries"         => 5,
             "AutoRetriesInterval" => 50,
-            "CapacityLimit" => 50,
-            "CongestionAttempts" => 3,
-            "RingSeconds"   => 20,
-            "VoiceCode"     => 123456789,
-            "CreatedByUser" => "test_user",
-            "ChangedByUser" => "test_user",
-            "LastUsed"      => "0001-01-01T00:00:00",
-            "CreateStamp"      => "0001-01-01T00:00:00",
-            "ChangeStamp"      => "0001-01-01T00:00:00",
+            "CapacityLimit"       => 50,
+            "CongestionAttempts"  => 3,
+            "RingSeconds"         => 20,
+            "VoiceCode"           => 123456789,
+            "CreatedByUser"       => "test_user",
+            "ChangedByUser"       => "test_user",
+            "LastUsed"            => "0001-01-01T00:00:00",
+            "CreateStamp"         => "0001-01-01T00:00:00",
+            "ChangeStamp"         => "0001-01-01T00:00:00",
         );
 
         foreach($a as $func => $val){
@@ -75,6 +76,46 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
     {
         $type = "test_type";
         $this->assertEquals($type, $this->mp->setVoiceType($type)->getVoiceType());
+    }
+
+    public function testInalidNumericVoiceType()
+    {
+        $type = "100";
+        $this->assertEquals($type, $this->mp->setVoiceType($type)->getVoiceType());
+    }
+
+    public function testPopulateFromArray()
+    {
+        $message_profile_json = json_decode(file_get_contents(__DIR__."/../../Data/message_profile.json"), true);
+        $mp = new MessageProfile();
+        $mp->populateFromArray($message_profile_json);
+
+        $special_functions = array(
+            "CallerID"                        => "getCalledId",
+            "DeleteLocked"                    => "isDeleteLocked",
+            "EnableWaterfall"                 => "isEnableWaterfall",
+            "EnableAnsweringMachineDetection" => "isEnableAnsweringMachineDetection",
+            "ContentProfile"                  => "skipContentProfile", // this is tested elsewhere
+        );
+
+        foreach ($message_profile_json as $key => $value) {
+            if (in_array($key, array_keys($special_functions))) {
+                $get_method = $special_functions[$key];
+            } else {
+                $get_method = "get" . $key;
+            }
+
+            if (method_exists($mp, $get_method)) {
+                $this->assertEquals($mp->$get_method($value), $value);
+            }
+        }
+    }
+
+    public function testAccessContentProfile()
+    {
+        $vap = new VoiceAlertProfile();
+        $this->mp->setContentProfile($vap);
+        $this->assertEquals(1, substr_count(get_class($this->mp->getContentProfile()),"VoiceAlertProfile"));
     }
 }
  
