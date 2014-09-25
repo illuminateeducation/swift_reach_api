@@ -26,7 +26,7 @@ class VoiceMessage extends MessageProfile
     /**
      * @var string
      */
-    protected $default_spoken_language;
+    protected $default_spoken_language = "English";
 
     /**
      * @return mixed
