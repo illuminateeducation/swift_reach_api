@@ -88,6 +88,12 @@ class MessageProfile extends AbstractVoiceMessage
      */
     protected $delete_locked = true;
 
+    public function toJson()
+    {
+        throw new SwiftReachException(__METHOD__." shouldn't be called.  Needs to be overridden.");
+    }
+
+
 
     public function populateFromArray($a)
     {

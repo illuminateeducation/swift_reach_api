@@ -26,6 +26,20 @@ class SimpleVoiceMessage
      */
     private $content;
 
+    public function toJson()
+    {
+        return json_encode(
+            array(
+                "Name"        => $this->getName(),
+                "Description" => $this->getDescription(),
+                "CallerId"    => $this->getCallerId(),
+                "UseTTs"      => $this->getUseTts(),
+                "Content"     => $this->getContent(),
+            )
+        );
+    }
+
+
 
     /**
      * @param $content

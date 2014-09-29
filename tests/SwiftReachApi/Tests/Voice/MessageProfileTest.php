@@ -72,18 +72,6 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
         $this->mp->setVisibility('invalid-visibility');
     }
 
-    public function testAcceessVoiceType()
-    {
-        $type = "test_type";
-        $this->assertEquals($type, $this->mp->setVoiceType($type)->getVoiceType());
-    }
-
-    public function testInalidNumericVoiceType()
-    {
-        $type = "100";
-        $this->assertEquals($type, $this->mp->setVoiceType($type)->getVoiceType());
-    }
-
     public function testPopulateFromArray()
     {
         $message_profile_json = json_decode(file_get_contents(__DIR__."/../../Data/message_profile.json"), true);

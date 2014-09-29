@@ -47,33 +47,6 @@ implements JsonSerialize
         return array();
     }
 
-    public function toJson()
-    {
-        $a = array();
-        foreach(get_object_vars($this) as $key => $value){
-            if(is_null($value)){
-                continue;
-            }
-
-            // convert $key
-            if($key == "caller_id"){
-                $key = "CallerID";
-            } elseif( $key == "use_tts"){
-                $key = "UseTTS";
-            } else {
-                $key = implode('', array_map("ucfirst", explode("_", $key)));
-            }
-
-            if($value instanceof ArraySerialize) {
-                $a[$key] = $value->toArray();
-            } else {
-                $a[$key] = $value;
-            }
-        }
-
-        return json_encode($a);
-    }
-
     /**
      * @param $caller_id
      * @return bool
