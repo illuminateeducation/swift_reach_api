@@ -126,6 +126,11 @@ class SwiftReachApi
 
     public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
     {
+        return $this->sendMessageToContactArray($message, $contacts, $hotline);
+    }
+
+    public function sendMessageToContactArray(AbstractVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
+    {
         if(!$message->getVoiceCode()){
             throw new SwiftReachException("No Voice Code was set.");
         }
