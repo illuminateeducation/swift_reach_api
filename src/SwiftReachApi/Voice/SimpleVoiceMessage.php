@@ -32,8 +32,8 @@ class SimpleVoiceMessage
             array(
                 "Name"        => $this->getName(),
                 "Description" => $this->getDescription(),
-                "CallerId"    => $this->getCallerId(),
-                "UseTTs"      => $this->getUseTts(),
+                "CallerID"    => $this->getCallerId(),
+                "UseTTS"      => $this->getUseTts(),
                 "Content"     => $this->getContent(),
             )
         );

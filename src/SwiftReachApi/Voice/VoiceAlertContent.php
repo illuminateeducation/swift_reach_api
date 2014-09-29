@@ -77,16 +77,16 @@ implements ArraySerialize
         switch($audio_source_type)
         {
             case AbstractAudioSource::AUDIO_SOURCE_VOICE:
-            case 0:
+            case "0":
                 return new VoiceAudioSource();
             case AbstractAudioSource::AUDIO_SOURCE_TTS_FIELD:
-            case 1:
+            case "1":
                 return new TtsFieldAudioSource();
             case AbstractAudioSource::AUDIO_SOURCE_TTS_TEXT:
-            case 2:
+            case "2":
                 return new TtsTextAudioSource();
             case AbstractAudioSource::AUDIO_SOURCE_TTS_USER_DEFINED_FIELD:
-            case 3:
+            case "3":
                 return new TtsUserDefinedFieldAudioSource();
             default:
                 throw new SwiftReachException("Couldn't create an audio source of type: '".$audio_source_type."'.");

@@ -36,7 +36,8 @@ class TtsUserDefinedFieldAudioSourceTest extends \PHPUnit_Framework_TestCase {
     public function testToArray()
     {
         $a = array(
-            "FieldKey"           => "This is a message",
+            '$type'             => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_USER_DEFINED_FIELD, SwiftReach.Swift911.Core",
+            "FieldKey"          => "This is a message",
             "AudioType"         => TtsUserDefinedFieldAudioSource::AUDIO_SOURCE_TTS_USER_DEFINED_FIELD,
         );
 

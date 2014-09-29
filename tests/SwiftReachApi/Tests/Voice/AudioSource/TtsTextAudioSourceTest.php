@@ -36,6 +36,7 @@ class TtsTextAudioSourceTest extends \PHPUnit_Framework_TestCase {
     public function testToArray()
     {
         $a = array(
+            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_TEXT, SwiftReach.Swift911.Core",
             "TTSText"           => "This is a message",
             "AudioType"         => TtsTextAudioSource::AUDIO_SOURCE_TTS_TEXT,
         );

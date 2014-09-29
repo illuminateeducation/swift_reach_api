@@ -33,7 +33,7 @@ class TtsFieldAudioSourceTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testInvalidSetTtsField()
     {
@@ -45,7 +45,8 @@ class TtsFieldAudioSourceTest extends \PHPUnit_Framework_TestCase {
     public function testToArray()
     {
         $a = array(
-            "TTSField"      =>  TtsFieldAudioSource::TTS_FIELD_TIME,
+            '$type'         => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_FIELD, SwiftReach.Swift911.Core",
+            "TTSField"      => TtsFieldAudioSource::TTS_FIELD_TIME,
             "AudioType"     => TtsFieldAudioSource::AUDIO_SOURCE_TTS_FIELD,
         );
 

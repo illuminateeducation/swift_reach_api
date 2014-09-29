@@ -84,6 +84,7 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
             "EnableWaterfall"                 => "isEnableWaterfall",
             "EnableAnsweringMachineDetection" => "isEnableAnsweringMachineDetection",
             "ContentProfile"                  => "skipContentProfile", // this is tested elsewhere
+            "VoiceType"                       => "skipVoiceType", // this is tested elsewhere
         );
 
         foreach ($message_profile_json as $key => $value) {

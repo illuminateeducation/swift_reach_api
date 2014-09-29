@@ -47,7 +47,7 @@ class VoiceAudioSourceTest extends \PHPUnit_Framework_TestCase {
     public function testToArray()
     {
         $a = array(
-            "VoiceCode"         => "123456789",
+            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core",
             "Content"           => "this is the message",
             "AutoGenerateVoice" => true,
             "FileVersion"       => 5,
@@ -55,7 +55,6 @@ class VoiceAudioSourceTest extends \PHPUnit_Framework_TestCase {
         );
 
         $b = $this->vast
-            ->setVoiceCode($a["VoiceCode"])
             ->setContent($a["Content"])
             ->setAutoGenerateVoice($a["AutoGenerateVoice"])
             ->setFileVersion($a["FileVersion"])
