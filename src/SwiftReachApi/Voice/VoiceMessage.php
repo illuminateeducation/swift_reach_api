@@ -9,6 +9,8 @@
 namespace SwiftReachApi\Voice;
 
 
+use SwiftReachApi\Exceptions\SwiftReachException;
+
 class VoiceMessage extends MessageProfile
 {
     /**
@@ -52,14 +54,6 @@ class VoiceMessage extends MessageProfile
         return self::VOICE_TYPE_VOICE_MESSAGE;
     }
 
-    public function getFieldsToIgnoreOnToJson()
-    {
-        return array(
-            "visibility",
-            "delete_locked",
-        );
-    }
-
     /**
      * fields had to be in a very particular order for it to work
      *
@@ -95,7 +89,7 @@ class VoiceMessage extends MessageProfile
         return json_encode($a);
 
     }
-    
+
     /**
      * @return string
      */
@@ -165,6 +159,9 @@ class VoiceMessage extends MessageProfile
     public function setAutoReplays($auto_replays)
     {
         $this->auto_replays = $auto_replays;
+        if(!is_numeric($this->getAutoReplays())){
+            throw new SwiftReachException("Auto Replay value must be a numeric value, '". $this->getAutoReplays()."' was given.");
+        }
         return $this;
     }
 

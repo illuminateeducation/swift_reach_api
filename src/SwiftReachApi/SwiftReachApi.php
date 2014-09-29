@@ -119,10 +119,7 @@ class SwiftReachApi
         if(!isset($json["VoiceCode"])){
             throw new SwiftReachException("Failed to create a new voice message");
         }
-
         $voice_message->setVoiceCode($json["VoiceCode"]);
-
-
 
         return $voice_message;
     }

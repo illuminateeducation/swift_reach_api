@@ -42,10 +42,6 @@ implements JsonSerialize
      */
     private $voice_code;
 
-    public function getFieldsToIgnoreOnTpJson()
-    {
-        return array();
-    }
 
     /**
      * @param $caller_id
