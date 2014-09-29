@@ -15,6 +15,9 @@ abstract class AbstractVoiceMessage
 implements JsonSerialize
 {
     CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:?\'" ]/';
+
+    CONST VOICE_TYPE_VOICE_MESSAGE = "voice_message";
+
     /**
      * Name of the message
      * @var  string
@@ -39,6 +42,11 @@ implements JsonSerialize
      */
     private $voice_code;
 
+    public function getFieldsToIgnoreOnTpJson()
+    {
+        return array();
+    }
+
     public function toJson()
     {
         $a = array();
@@ -48,8 +56,7 @@ implements JsonSerialize
             }
 
             // convert $key
-
-            if($key = "caller_id"){
+            if($key == "caller_id"){
                 $key = "CallerID";
             } elseif( $key == "use_tts"){
                 $key = "UseTTS";

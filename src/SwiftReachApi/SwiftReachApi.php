@@ -5,6 +5,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Voice\VoiceContactArray;
@@ -79,6 +80,51 @@ class SwiftReachApi
         $message->setVoiceCode($json["VoiceCode"]);
 
         return $message;
+    }
+
+    public function createVoiceMessage(AbstractVoiceMessage $voice_message)
+    {
+        $path = "/api/Messages/Voice/Create";
+        if(!$this->getApiKey()){
+            throw new SwiftReachException("Swift Reach Api key was not set.");
+        }
+        if(!$this->getBaseUrl()){
+            throw new SwiftReachException("Base url was not set.");
+        }
+
+        //test for empty fields
+        $fields = array("Name", "Description", "CallerId");
+        $missing_fields = array();
+        foreach ($fields as $field) {
+            $func = "get" . $field;
+            if ($voice_message->$func() == "") {
+                $missing_fields[] = $field;
+            }
+        }
+        if (!empty($missing_fields)) {
+            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
+        }
+
+
+        try{
+            $json = $voice_message->toJson();
+            $response = $this->post($this->getBaseUrl().$path, $json);
+        }
+        catch(\Exception $e){
+            throw $e;
+        }
+
+
+        $json = $response->json();
+        if(!isset($json["VoiceCode"])){
+            throw new SwiftReachException("Failed to create a new voice message");
+        }
+
+        $voice_message->setVoiceCode($json["VoiceCode"]);
+
+
+
+        return $voice_message;
     }
 
     public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
@@ -195,6 +241,10 @@ class SwiftReachApi
     public function getMessageProfile($voice_code)
     {
         $json = $this->get($this->getBaseUrl() . "/api/Messages/Voice/" . $voice_code)->json();
+        if(is_null($json)){
+            throw new SwiftReachException("Couldn't find a message profile with the voice code '".$voice_code."'");
+        }
+
         $mp = new MessageProfile();
         $mp->populateFromArray($json);
         return $mp;

@@ -15,6 +15,7 @@ class TtsUserDefinedFieldAudioSource extends AbstractAudioSource
     public function toArray()
     {
         return array(
+            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_USER_DEFINED_FIELD, SwiftReach.Swift911.Core",
             "FieldKey" => $this->getFieldKey(),
             "AudioType" => $this->getAudioType()
         );

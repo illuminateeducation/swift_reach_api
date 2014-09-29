@@ -114,8 +114,8 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
     public function testAccessContentProfile()
     {
         $vap = new VoiceAlertProfile();
-        $this->mp->setContentProfile($vap);
-        $this->assertEquals(1, substr_count(get_class($this->mp->getContentProfile()),"VoiceAlertProfile"));
+        $this->mp->setContentProfiles($vap);
+        $this->assertEquals(1, substr_count(get_class($this->mp->getContentProfiles()),"VoiceAlertProfile"));
     }
 }
  

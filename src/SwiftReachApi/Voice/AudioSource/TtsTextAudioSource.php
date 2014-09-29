@@ -15,8 +15,9 @@ class TtsTextAudioSource extends AbstractAudioSource
     public function toArray()
     {
         return array(
+            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_TEXT, SwiftReach.Swift911.Core",
+            "AudioType" => $this->getAudioType(),
             "TTSText" => $this->getTtsText(),
-            "AudioType" => $this->getAudioType()
         );
     }
 

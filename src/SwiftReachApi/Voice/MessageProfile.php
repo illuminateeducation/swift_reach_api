@@ -51,9 +51,9 @@ class MessageProfile extends AbstractVoiceMessage
     protected $enable_answering_machine_detection = false;
 
     /**
-     * @var VoiceAlertProfile
+     * @var array VoiceAlertProfile
      */
-    protected $content_profile;
+    protected $content_profiles = array();
 
     /**
      * @var timestamp
@@ -92,7 +92,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function populateFromArray($a)
     {
         $special_functions = array(
-            "CallerID" => "setCalledId",
+            "CallerID"       => "setCalledId",
             "ContentProfile" => "populateContentProfileFromArray"
         );
 
@@ -110,9 +110,11 @@ class MessageProfile extends AbstractVoiceMessage
     }
 
     private function populateContentProfileFromArray($a){
-        $content_profile = new VoiceAlertProfile();
-        $content_profile->populateFromArray($a);
-        $this->setContentProfile($content_profile);
+        foreach($a as $cp) {
+            $content_profile = new VoiceAlertProfile();
+            $content_profile->populateFromArray($cp);
+            $this->addContentProfile($content_profile);
+        }
     }
 
     public function validateVisibility($visibility)
@@ -157,14 +159,6 @@ class MessageProfile extends AbstractVoiceMessage
         return $this->voice_type;
     }
 
-    /**
-     * @param string $voice_type
-     */
-    public function setVoiceType($voice_type)
-    {
-        $this->voice_type = $voice_type;
-        return $this;
-    }
 
     /**
      * @return int
@@ -339,17 +333,28 @@ class MessageProfile extends AbstractVoiceMessage
     /**
      * @return VoiceAlertProfile
      */
-    public function getContentProfile()
+    public function getContentProfiles()
     {
-        return $this->content_profile;
+        return $this->content_profiles;
     }
 
     /**
      * @param VoiceAlertProfile $content_profile
+     * @return $this
      */
-    public function setContentProfile($content_profile)
+    public function setContentProfiles($content_profile)
     {
-        $this->content_profile = $content_profile;
+        $this->content_profiles = $content_profile;
+        return $this;
+    }
+
+    /**
+     * @param $content_profile
+     * @return this
+     */
+    public function addContentProfile($content_profile)
+    {
+        $this->content_profiles[] = $content_profile;
         return $this;
     }
 
