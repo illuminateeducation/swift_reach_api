@@ -69,22 +69,22 @@ class VoiceMessage extends MessageProfile
     {
         $a = array(
                 '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
-                "Name"                            => "The Voice Message",
-                "Description"                     => "this is a test",
-                "DefaultSpokenLanguage"           => "English",
-                "AutoReplays"                     => 1,
-                "RequireResponse"                 => false,
-                "ValidResponses"                  => null,
-                "EnableAnsweringMachineDetection" => false,
-                "EnableAnsweringMachineMessage"   => false,
-                "CallerID"                        => "2012361344",
-                "CapacityLimit"                   => 0,
-                "RingSeconds"                     => 60,
-                "CongestionAttempts"              => 3,
-                "AutoRetries"                     => 0,
-                "AutoRetriesInterval"             => 3,
-                "EnableWaterfall"                 => false,
-                "VoiceType"                       => "voice_message",
+                "Name"                            => $this->getName(),
+                "Description"                     => $this->getDescription(),
+                "DefaultSpokenLanguage"           => $this->getDefaultSpokenLanguage(),
+                "AutoReplays"                     => $this->getAutoReplays(),
+                "RequireResponse"                 => $this->isRequiredResponse(),
+                "ValidResponses"                  => $this->getValidResponses(),
+                "EnableAnsweringMachineDetection" => $this->isEnableAnsweringMachineDetection(),
+                "EnableAnsweringMachineMessage"   => $this->isEnableAnsweringMachineMessage(),
+                "CallerID"                        => $this->getCallerId(),
+                "CapacityLimit"                   => $this->getCapacityLimit(),
+                "RingSeconds"                     => $this->getRingSeconds(),
+                "CongestionAttempts"              => $this->getCongestionAttempts(),
+                "AutoRetries"                     => $this->getAutoRetries(),
+                "AutoRetriesInterval"             => $this->getAutoRetriesInterval(),
+                "EnableWaterfall"                 => $this->isEnableWaterfall(),
+                "VoiceType"                       => $this->getVoiceType(),
             );
 
         $a["ContentProfile"] = array();
@@ -95,26 +95,7 @@ class VoiceMessage extends MessageProfile
         return json_encode($a);
 
     }
-
-
-    /**
-     * @return mixed
-     */
-    public function getContentProfiles()
-    {
-        return $this->content_profiles;
-    }
-
-    /**
-     * @param mixed $content_profile
-     * @return VoiceMessage this
-     */
-    public function setContentProfiles($content_profile)
-    {
-        $this->content_profiles = $content_profile;
-        return $this;
-    }
-
+    
     /**
      * @return string
      */
