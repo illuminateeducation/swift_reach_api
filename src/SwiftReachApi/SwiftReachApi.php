@@ -56,17 +56,7 @@ class SwiftReachApi
         }
 
         //test for empty fields
-        $fields = array("Name", "Description", "CallerId", "UseTTS", "Content");
-        $missing_fields = array();
-        foreach ($fields as $field) {
-            $func = "get" . $field;
-            if ($message->$func() == "") {
-                $missing_fields[] = $field;
-            }
-        }
-        if (!empty($missing_fields)) {
-            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
-        }
+        $message->requiredFieldsSet();
 
         $response = $this->post($this->getBaseUrl().$path, $message->toJson());
         $json = $response->json();
@@ -93,25 +83,10 @@ class SwiftReachApi
         }
 
         //test for empty fields
-        $fields = array("Name", "Description", "CallerId");
-        $missing_fields = array();
-        foreach ($fields as $field) {
-            $func = "get" . $field;
-            if ($voice_message->$func() == "") {
-                $missing_fields[] = $field;
-            }
-        }
-        if (!empty($missing_fields)) {
-            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
-        }
+        $voice_message->requiredFieldsSet();
 
-        try{
-            $json = $voice_message->toJson();
-            $response = $this->post($this->getBaseUrl().$path, $json);
-        }
-        catch(\Exception $e){
-            throw $e;
-        }
+        $json = $voice_message->toJson();
+        $response = $this->post($this->getBaseUrl().$path, $json);
 
         $json = $response->json();
         if(!isset($json["VoiceCode"])){
@@ -166,6 +141,57 @@ class SwiftReachApi
 
     /**
      * @param $voice_code
+     * @return bool
+     * @throws SwiftReachException
+     */
+    public function deleteVoiceMessage($voice_code)
+    {
+        $url = $this->base_url . "/api/Messages/Voice/Delete/".$voice_code;
+        return $this->delete($url);
+    }
+
+    /**
+     * @param $url
+     * @return bool
+     * @throws SwiftReachException
+     */
+    private function delete($url)
+    {
+        $headers = array(
+            'Content-type: application/json',
+            'SwiftAPI-Key: ' . $this->getApiKey(),
+            'Accept: application/json',
+            'Expect:'
+        );
+        try{
+            $response = $this->getGuzzleClient()->delete($url, array(
+                    'config' => array(
+                        'curl' => array(
+                            CURLOPT_FOLLOWLOCATION => TRUE,
+                            CURLOPT_RETURNTRANSFER => TRUE,
+                            CURLOPT_CUSTOMREQUEST => "DELETE",
+                            CURLOPT_HTTPHEADER => $headers
+                        )
+                    )
+                ));
+        }
+        catch(ClientException $e){
+            $json = $e->getResponse()->json();
+            if(isset($json["Message"])){
+                throw new SwiftReachException($json["Message"]);
+            }else{
+                throw new SwiftReachException($e->getMessage());
+            }
+        }catch(Exception $e){
+            throw new SwiftReachException($e->getMessage());
+        }
+
+        $body = (string)$response->getBody();
+        return ($body === "0");
+    }
+
+    /**
+     * @param $voice_code
      * @param $voice_fragment_code
      * @param $file The full file path
      * @param null $file_type
@@ -208,6 +234,7 @@ class SwiftReachApi
         }catch(Exception $e){
             throw new SwiftReachException($e->getMessage());
         }
+
         $body = (string)$response->getBody();
         return ($body === "0");
     }

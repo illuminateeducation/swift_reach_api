@@ -93,7 +93,12 @@ class MessageProfile extends AbstractVoiceMessage
         throw new SwiftReachException(__METHOD__." shouldn't be called.  Needs to be overridden.");
     }
 
-
+    /**
+     * @inheritdoc
+     */
+    public function requiredFieldsSet()
+    {
+    }
 
     public function populateFromArray($a)
     {

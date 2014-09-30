@@ -57,6 +57,30 @@ implements JsonSerialize
         }
     }
 
+    /**
+     * check that all required fields are set
+     * @throws \SwiftReachApi\Exceptions\SwiftReachApiException
+     */
+    abstract function requiredFieldsSet();
+
+    /**
+     * iterate through a list of fields and ensure that they are set since they are required.
+     * @param $fields array of field names to check
+     * @throws SwiftReachException
+     */
+    protected function checkRequiredFieldsSet($fields)
+    {
+        $missing_fields = array();
+        foreach ($fields as $field) {
+            $func = "get" . $field;
+            if ($this->$func() == "") {
+                $missing_fields[] = $field;
+            }
+        }
+        if (!empty($missing_fields)) {
+            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
+        }
+    }
 
     /**
      * @param string $caller_id

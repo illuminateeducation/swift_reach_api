@@ -55,9 +55,16 @@ class VoiceMessage extends MessageProfile
     }
 
     /**
+     * @inheritdoc
+     */
+    public function requiredFieldsSet()
+    {
+        $fields = array("Name", "Description", "CallerId");
+        $this->checkRequiredFieldsSet($fields);
+    }
+
+    /**
      * fields had to be in a very particular order for it to work
-     *
-     *
      **/
     public function toJson()
     {

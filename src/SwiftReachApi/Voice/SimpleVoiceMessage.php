@@ -39,7 +39,14 @@ class SimpleVoiceMessage
         );
     }
 
-
+    /**
+     * @inheritdoc
+     */
+    public function requiredFieldsSet()
+    {
+        $fields = array("Name", "Description", "CallerId", "UseTTS", "Content");
+        $this->checkRequiredFieldsSet($fields);
+    }
 
     /**
      * @param $content
