@@ -3,6 +3,7 @@ namespace SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
@@ -41,9 +42,8 @@ class SwiftReachApi
     /**
      * Create a simple voice message on the swift reach system.
      * @param SimpleVoiceMessage $message
-     * @return SimpleVoiceMessage Return the passed in $message with the VoiceCode set if the request was successful
-     * @throws Exceptions\SwiftReachException
-     * @throws \Exception
+     * @return MessageProfile
+     * @throws \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function createSimpleVoiceMessage(SimpleVoiceMessage $message)
     {
@@ -68,20 +68,20 @@ class SwiftReachApi
             throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
         }
 
-
-        try{
-            $response = $this->post($this->getBaseUrl().$path, $message->toJson());
-        }
-        catch(\Exception $e){
-            throw $e;
-        }
-
+        $response = $this->post($this->getBaseUrl().$path, $message->toJson());
         $json = $response->json();
-        $message->setVoiceCode($json["VoiceCode"]);
 
-        return $message;
+        $message_profile = new MessageProfile();
+        $message_profile->populateFromArray($json);
+
+        return $message_profile;
     }
-
+    /**
+     * Create a voice message on the swift reach system.
+     * @param AbstractVoiceMessage $message
+     * @return MessageProfile
+     * @throws \SwiftReachApi\Exceptions\SwiftReachException
+     */
     public function createVoiceMessage(AbstractVoiceMessage $voice_message)
     {
         $path = "/api/Messages/Voice/Create";
@@ -105,7 +105,6 @@ class SwiftReachApi
             throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
         }
 
-
         try{
             $json = $voice_message->toJson();
             $response = $this->post($this->getBaseUrl().$path, $json);
@@ -114,14 +113,14 @@ class SwiftReachApi
             throw $e;
         }
 
-
         $json = $response->json();
         if(!isset($json["VoiceCode"])){
             throw new SwiftReachException("Failed to create a new voice message");
         }
-        $voice_message->setVoiceCode($json["VoiceCode"]);
+        $message_profile = new MessageProfile();
+        $message_profile->populateFromArray($json);
 
-        return $voice_message;
+        return $message_profile;
     }
 
     public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
@@ -164,6 +163,55 @@ class SwiftReachApi
         // response body is the job id
         return $response->getBody();
     }
+
+    /**
+     * @param $voice_code
+     * @param $voice_fragment_code
+     * @param $file The full file path
+     * @param null $file_type
+     * @return bool true on success, false on failure
+     */
+    public function uploadAudioFile($voice_code, $voice_fragment_code, $file, $file_type = null)
+    {
+        $url = $this->base_url."/api/Messages/Voice/UploadAudio/$voice_code/$voice_fragment_code";
+
+        if(!empty($file_type)){
+            $url .= "/".$file_type;
+        }
+
+        $headers = array(
+            'Content-type: x-www-form-urlencoded',
+            'SwiftAPI-Key: ' . $this->getApiKey(),
+            'Expect:'
+        );
+
+        try{
+            $response = $this->getGuzzleClient()->post($url, array(
+                    'config' => array(
+                        'curl' => array(
+                            CURLOPT_FOLLOWLOCATION => TRUE,
+                            CURLOPT_RETURNTRANSFER => TRUE,
+                            CURLOPT_POST => TRUE,
+                            CURLOPT_POSTFIELDS => file_get_contents($file),
+                            CURLOPT_HTTPHEADER => $headers
+                        )
+                    )
+                ));
+        }
+        catch(ClientException $e){
+            $json = $e->getResponse()->json();
+            if(isset($json["Message"])){
+                throw new SwiftReachException($json["Message"]);
+            }else{
+                throw new SwiftReachException($e->getMessage());
+            }
+        }catch(Exception $e){
+            throw new SwiftReachException($e->getMessage());
+        }
+        $body = (string)$response->getBody();
+        return ($body === "0");
+    }
+
 
     private function post($url, $body)
     {

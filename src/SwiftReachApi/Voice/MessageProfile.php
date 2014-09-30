@@ -98,7 +98,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function populateFromArray($a)
     {
         $special_functions = array(
-            "CallerID"       => "setCalledId",
+            "CallerID"       => "setCallerId",
             "ContentProfile" => "populateContentProfileFromArray"
         );
 

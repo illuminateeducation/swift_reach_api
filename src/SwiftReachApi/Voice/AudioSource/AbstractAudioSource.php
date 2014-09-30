@@ -36,10 +36,11 @@ implements ArraySerialize
         $fields = get_object_vars($this);
         unset($fields["AudioType"]);
 
-        foreach($fields as $f){
-            if(isset($a[$f])){
-                $method = "set".$f;
-                $this->$method($a[$f]);
+        foreach($fields as $f => $value){
+            $key = implode("",array_map("ucfirst", explode("_", $f)));
+            if(isset($a[$key])){
+                $method = "set".$key;
+                $this->$method($a[$key]);
             }
         }
     }
