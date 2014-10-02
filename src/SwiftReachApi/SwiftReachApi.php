@@ -98,7 +98,7 @@ class SwiftReachApi
         return $message_profile;
     }
 
-    public function sendSimpleVoiceMessageToContactArray(SimpleVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
+    public function sendSimpleVoiceMessageToContactArray($message, VoiceContactArray $contacts, $hotline = '')
     {
         return $this->sendMessageToContactArray($message, $contacts, $hotline);
     }

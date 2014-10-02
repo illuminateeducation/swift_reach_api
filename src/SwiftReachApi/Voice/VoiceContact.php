@@ -30,6 +30,12 @@ class VoiceContact implements JsonSerialize, ArraySerialize
      */
     private $phones;
 
+    /** @var  string email address */
+    private $email;
+
+    /** @var array KeyValue */
+    private $user_defined_fields = array();
+
     function __construct($name, $guid ='')
     {
         $this->setName($name);
@@ -68,13 +74,27 @@ class VoiceContact implements JsonSerialize, ArraySerialize
         $a = array(
             "EntityName" => $this->getName(),
             "EntityGuid" => $this->getGuid(),
-            "Phones" => array()
         );
 
+        // add email
+        if($this->getEmail()){
+            $a["Email"] = $this->getEmail();
+        }
+
         // add the phones
-        foreach($this->getPhones() as $p){
-            /** @var $p VoiceContactPhone */
-            $a["Phones"][] = $p->toArray();
+        if(count($this->getPhones())) {
+            foreach ($this->getPhones() as $p) {
+                /** @var $p VoiceContactPhone */
+                $a["Phones"][] = $p->toArray();
+            }
+        }
+
+        // add the user defined fields
+        if(count($this->getUserDefinedFields())) {
+            foreach ($this->getUserDefinedFields() as $udf) {
+                /** @var $udf KeyValue */
+                $a["UserDefined"][] = $udf->toArray();
+            }
         }
 
         return $a;
@@ -138,15 +158,15 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     {
         $this->phones = array();
         foreach($phones as $p){
-            try{
-                $this->addPhone($p);
-            }catch(\Exception $e){
-                throw $e;
-            }
+            $this->addPhone($p);
         }
         return $this;
     }
 
+    /**
+     * @param VoiceContactPhone $phone
+     * @return $this
+     */
     public function addPhone(VoiceContactPhone $phone)
     {
         $this->phones[] = $phone;
@@ -159,6 +179,57 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function getPhones()
     {
         return $this->phones;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return this
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            throw new SwiftReachException("'$email' is not a valid email address.");
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserDefinedFields()
+    {
+        return $this->user_defined_fields;
+    }
+
+    /**
+     * @param array $user_defined_fields
+     */
+    public function setUserDefinedFields($user_defined_fields)
+    {
+        $this->user_defined_fields = array();
+        foreach($user_defined_fields as $udf){
+            $this->addUserDefinedField($udf);
+        }
+        return $this;
+    }
+
+    /**
+     * @param array $user_defined_fields
+     * @return this
+     */
+    public function addUserDefinedField(KeyValue $user_defined_field)
+    {
+        $this->user_defined_fields[] = $user_defined_field;
+        return $this;
     }
 
 }

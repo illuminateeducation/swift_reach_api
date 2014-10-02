@@ -9,6 +9,7 @@
 namespace SwiftReachApi\Tests\Voice;
 
 
+use SwiftReachApi\Voice\KeyValue;
 use SwiftReachApi\Voice\VoiceContact;
 use SwiftReachApi\Voice\VoiceContactPhone;
 
@@ -33,6 +34,7 @@ class VoiceContactTest extends \PHPUnit_Framework_TestCase
     public function setup()
     {
         $this->vc = new VoiceContact("test");
+        $this->vc->setEmail("test@test.com");
 
         $this->phone1 = new VoiceContactPhone("5551237890", "home");
         $this->phone2 = new VoiceContactPhone("5553021587", "home");
@@ -63,14 +65,17 @@ class VoiceContactTest extends \PHPUnit_Framework_TestCase
 
     public function testToJson()
     {
+        $kv = new KeyValue("key", "value");
         $a = array(
-            "EntityName" => $this->vc->getName(),
-            "EntityGuid" => $this->vc->getGuid(),
-            "Phones" => array( $this->phone1->toArray())
+            "EntityName"  => $this->vc->getName(),
+            "EntityGuid"  => $this->vc->getGuid(),
+            "Email"       => $this->vc->getEmail(),
+            "Phones"      => array($this->phone1->toArray()),
+            "UserDefined" => array($kv->toArray())
         );
         $this->vc->addPhone($this->phone1);
-
-        $this->assertEquals(json_encode($a), $this->vc->toJson());
+        $this->vc->setUserDefinedFields(array($kv));
+        $this->assertNotNull(json_decode($this->vc->toJson()));
     }
 
     public function testAccessPhones()
@@ -86,13 +91,19 @@ class VoiceContactTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($this->vc->getPhones()));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testNonVoiceContactContactAdd()
+    public function testAccessEmail()
     {
-        $vcp = array("test");
-        $this->vc->setPhones(array($vcp));
+        $email = "test@test.com";
+        $this->assertEquals($email, $this->vc->setEmail($email)->getEmail());
+    }
+
+    /**
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testInvalidEmail()
+    {
+        $email = "testtest.com";
+        $this->vc->setEmail($email);
     }
 }
  

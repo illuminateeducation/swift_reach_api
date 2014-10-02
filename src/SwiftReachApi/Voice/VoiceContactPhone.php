@@ -44,7 +44,11 @@ class VoiceContactPhone implements ArraySerialize{
      */
     private $phone_label;
 
-
+    /**
+     * @param $phone string Phone number
+     * @param $phone_label string A label for the phone number
+     * @throws SwiftReachException
+     */
     function __construct($phone, $phone_label)
     {
         $this->setPhone($phone);
