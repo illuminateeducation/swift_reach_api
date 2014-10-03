@@ -1,0 +1,10 @@
+{
+    "SpokenLanguage":"English",
+    "Subject":"my subject",
+    "Body":
+        [{
+            "$type":"SwiftReach.Swift911.Core.Messages.Email.EMAIL_TEXT_SOURCE_TEXT, SwiftReach.Swift911.Core",
+            "Text":"this is the body of my email",
+            "TextType":"email_text_source_text"
+        }]
+}

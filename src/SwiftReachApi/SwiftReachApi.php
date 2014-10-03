@@ -317,7 +317,6 @@ class SwiftReachApi
         }
     }
 
-
     public function getHotlineList()
     {
         return $this->get($this->getBaseUrl() . "/api/Hotlines/List")->json();
