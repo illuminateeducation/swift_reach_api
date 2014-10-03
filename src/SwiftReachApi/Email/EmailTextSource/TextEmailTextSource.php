@@ -7,6 +7,12 @@ class TextEmailTextSource extends AbstractEmailTextSource
 {
     protected $text;
 
+    function __construct($text = '')
+    {
+        $this->text = $text;
+    }
+
+
     public function getTextType()
     {
         return self::EMAIL_TEXT_SOURCE_TEXT;
@@ -33,9 +39,9 @@ class TextEmailTextSource extends AbstractEmailTextSource
      * @param mixed $tts_text
      * @return this
      */
-    public function setText($tts_text)
+    public function setText($text)
     {
-        $this->text = $tts_text;
+        $this->text = $text;
         return $this;
     }
 

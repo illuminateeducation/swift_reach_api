@@ -44,7 +44,13 @@ class SwiftReachApi
     //-----------------------------------------------------------------------------------------------------------------
     public function createEmailMessage(EmailMessage $email_message)
     {
+        $path = "/api/Messages/Email/Create";
 
+        //test for empty fields
+        $email_message->requiredFieldsSet();
+
+        $response = $this->post($this->getBaseUrl() . $path, $email_message->toJson());
+        return $response->getBody();
     }
     public function getEmailMessage($email_code)
     {
@@ -70,12 +76,6 @@ class SwiftReachApi
     public function createSimpleVoiceMessage(SimpleVoiceMessage $message)
     {
         $path = "/api/Messages/Voice/Create/Simple";
-        if (!$this->getApiKey()) {
-            throw new SwiftReachException("Swift Reach Api key was not set.");
-        }
-        if (!$this->getBaseUrl()) {
-            throw new SwiftReachException("Base url was not set.");
-        }
 
         //test for empty fields
         $message->requiredFieldsSet();

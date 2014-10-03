@@ -82,6 +82,21 @@ class EmailMessage implements JsonSerialize
         return json_encode($a);
     }
 
+    public function requiredFieldsSet()
+    {
+        $required_fields = array("Name", "Description", "FromName", "FromAddress");
+        $missing_fields = array();
+        foreach ($required_fields as $field) {
+            $func = "get" . $field;
+            if ($this->$func() == "") {
+                $missing_fields[] = $field;
+            }
+        }
+        if (!empty($missing_fields)) {
+            throw new SwiftReachException("The following fields cannot be blank: " . implode(", ", $missing_fields));
+        }
+    }
+
 
     public function populateFromArray($a)
     {

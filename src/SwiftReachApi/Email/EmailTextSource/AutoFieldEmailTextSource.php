@@ -16,6 +16,14 @@ class AutoFieldEmailTextSource extends AbstractEmailTextSource
 
     protected $field_type;
 
+    function __construct($field_type = '')
+    {
+        if ($field_type) {
+            $this->setFieldType($field_type);
+        }
+    }
+
+
     public function getTextType()
     {
         return self::EMAIL_TEXT_SOURCE_AUTO_FIELD;

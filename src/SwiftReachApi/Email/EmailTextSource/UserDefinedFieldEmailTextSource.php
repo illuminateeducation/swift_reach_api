@@ -7,6 +7,12 @@ class UserDefinedFieldEmailTextSource extends AbstractEmailTextSource
 {
     protected $field_key;
 
+    function __construct($field_key = '')
+    {
+        $this->field_key = $field_key;
+    }
+
+
     public function getTextType()
     {
         return self::EMAIL_TEXT_SOURCE_USER_DEFINED_FIELD;
