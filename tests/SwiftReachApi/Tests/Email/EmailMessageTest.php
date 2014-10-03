@@ -73,20 +73,16 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
     public function testPopulateFromArray()
     {
 
-        $message_profile_json = json_decode(file_get_contents(__DIR__."/../../Data/message_profile.json"), true);
-        $em = new EmailMessge();
-        $em->populateFromArray($message_profile_json);
+        $email_json = json_decode(file_get_contents(__DIR__."/../../Data/Email/email_message.json"), true);
+        $em = new EmailMessage();
+        $em->populateFromArray($email_json);
 
         $special_functions = array(
-            "CallerID"                        => "getCalledId",
             "DeleteLocked"                    => "isDeleteLocked",
-            "EnableWaterfall"                 => "isEnableWaterfall",
-            "EnableAnsweringMachineDetection" => "isEnableAnsweringMachineDetection",
-            "ContentProfile"                  => "skipContentProfile", // this is tested elsewhere
-            "VoiceType"                       => "skipVoiceType", // this is tested elsewhere
+            "Content"                       => "skipContentProfile", // this is tested elsewhere
         );
 
-        foreach ($message_profile_json as $key => $value) {
+        foreach ($email_json as $key => $value) {
             if (in_array($key, array_keys($special_functions))) {
                 $get_method = $special_functions[$key];
             } else {
@@ -97,23 +93,36 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
                 $this->assertEquals($em->$get_method($value), $value);
             }
         }
-
     }
 
     public function testAccessContentProfile()
     {
         $ec = new EmailContent();
         $this->em->setContent(array($ec));
-
         $contents = $this->em->getContent();
         $this->assertEquals(1, count($contents));
         $this->assertEquals(1, substr_count(get_class(array_pop($contents)),"EmailContent"));
 
     }
 
-    public function testPopultateContentFromArray()
+    public function testToJson()
     {
+        $email_json = json_decode(file_get_contents(__DIR__."/../../Data/Email/email_message.json"), true);
+        $em = new EmailMessage();
+        $em->populateFromArray($email_json);
 
+        $a = array(
+            "Name", "Description", "FromName", "FromAddress", "DefaultSpokenLanguage", "Visibility"
+        );
+
+        $email_array = json_decode($em->toJson(), true);
+
+        foreach($a as $field){
+            $this->assertEquals($email_json[$field], $email_array[$field]);
+        }
+
+        $this->assertEquals($email_json["DeleteLocked"], $em->isDeleteLocked());
     }
+
 }
  

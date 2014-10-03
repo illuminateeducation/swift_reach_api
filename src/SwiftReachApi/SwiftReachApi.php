@@ -5,6 +5,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
+use SwiftReachApi\Email\EmailMessage;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
@@ -38,6 +39,27 @@ class SwiftReachApi
 
         $this->guzzle_client = new Client();
     }
+    //-----------------------------------------------------------------------------------------------------------------
+    //  Start Email Functions
+    //-----------------------------------------------------------------------------------------------------------------
+    public function createEmailMessage(EmailMessage $email_message)
+    {
+
+    }
+    public function getEmailMessage($email_code)
+    {
+        $a = $this->get($this->getBaseUrl()."/api/Messages/Email/".$email_code)->json();
+        $em = new EmailMessage();
+        $em->populateFromArray($a);
+        return $em;
+    }
+    //-----------------------------------------------------------------------------------------------------------------
+    //  End Email
+    //-----------------------------------------------------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //  Start Voice Functions
+    //-----------------------------------------------------------------------------------------------------------------
 
     /**
      * Create a simple voice message on the swift reach system.
@@ -152,6 +174,32 @@ class SwiftReachApi
         return $this->delete($url);
     }
 
+    public function getHotlineList()
+    {
+        return $this->get($this->getBaseUrl() . "/api/Hotlines/List")->json();
+    }
+
+
+    /**
+     * @param $voice_code
+     * @return \SwiftReachApi\Voice\MessageProfile
+     */
+    public function getMessageProfile($voice_code)
+    {
+        $json = $this->get($this->getBaseUrl() . "/api/Messages/Voice/" . $voice_code)->json();
+        if (is_null($json)) {
+            throw new SwiftReachException("Couldn't find a message profile with the voice code '" . $voice_code . "'");
+        }
+
+        $mp = new MessageProfile();
+        $mp->populateFromArray($json);
+
+        return $mp;
+    }
+    //-----------------------------------------------------------------------------------------------------------------
+    //  End Voice
+    //-----------------------------------------------------------------------------------------------------------------
+
     /**
      * @param $url
      * @return bool
@@ -165,31 +213,13 @@ class SwiftReachApi
             'Accept: application/json',
             'Expect:'
         );
-        try {
-            $response = $this->getGuzzleClient()->delete(
-                $url,
-                array(
-                    'config' => array(
-                        'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_CUSTOMREQUEST  => "DELETE",
-                            CURLOPT_HTTPHEADER     => $headers
-                        )
-                    )
-                )
-            );
-        } catch (ClientException $e) {
-            $json = $e->getResponse()->json();
-            if (isset($json["Message"])) {
-                throw new SwiftReachException($json["Message"]);
-            } else {
-                throw new SwiftReachException($e->getMessage());
-            }
-        } catch (Exception $e) {
-            throw new SwiftReachException($e->getMessage());
-        }
-
+        $curl_opts = array(
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST  => "DELETE",
+            CURLOPT_HTTPHEADER     => $headers
+        );
+        $response = $this->restAction('delete', $url, $curl_opts);
         $body = (string)$response->getBody();
 
         return ($body === "0");
@@ -215,33 +245,14 @@ class SwiftReachApi
             'SwiftAPI-Key: ' . $this->getApiKey(),
             'Expect:'
         );
-
-        try {
-            $response = $this->getGuzzleClient()->post(
-                $url,
-                array(
-                    'config' => array(
-                        'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_POST           => true,
-                            CURLOPT_POSTFIELDS     => file_get_contents($file),
-                            CURLOPT_HTTPHEADER     => $headers
-                        )
-                    )
-                )
-            );
-        } catch (ClientException $e) {
-            $json = $e->getResponse()->json();
-            if (isset($json["Message"])) {
-                throw new SwiftReachException($json["Message"]);
-            } else {
-                throw new SwiftReachException($e->getMessage());
-            }
-        } catch (Exception $e) {
-            throw new SwiftReachException($e->getMessage());
-        }
-
+        $curl_opts = array(
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => file_get_contents($file),
+            CURLOPT_HTTPHEADER     => $headers
+        );
+        $response = $this->restAction('post', $url, $curl_opts);
         $body = (string)$response->getBody();
 
         return ($body === "0");
@@ -256,32 +267,15 @@ class SwiftReachApi
             'Accept: application/json',
             'Expect:'
         );
+        $curl_opts = array(
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $body,
+            CURLOPT_HTTPHEADER     => $headers
+        );
+        return $this->restAction('post', $url, $curl_opts);
 
-        try {
-            return $this->getGuzzleClient()->post(
-                $url,
-                array(
-                    'config' => array(
-                        'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_POST           => true,
-                            CURLOPT_POSTFIELDS     => $body,
-                            CURLOPT_HTTPHEADER     => $headers
-                        )
-                    )
-                )
-            );
-        } catch (ClientException $e) {
-            $json = $e->getResponse()->json();
-            if (isset($json["Message"])) {
-                throw new SwiftReachException($json["Message"]);
-            } else {
-                throw new SwiftReachException($e->getMessage());
-            }
-        } catch (Exception $e) {
-            throw new SwiftReachException($e->getMessage());
-        }
     }
 
     public function get($url)
@@ -292,16 +286,21 @@ class SwiftReachApi
             'Accept: application/json'
         );
 
-        try {
+        $curl_opts = array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => $headers
+        );
+        return $this->restAction('get', $url, $curl_opts);
+    }
 
-            return $this->getGuzzleClient()->get(
+    private function restAction($action, $url, $curl_opts)
+    {
+        try {
+            return $this->getGuzzleClient()->$action(
                 $url,
                 array(
                     'config' => array(
-                        'curl' => array(
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_HTTPHEADER     => $headers
-                        )
+                        'curl' => $curl_opts
                     )
                 )
             );
@@ -317,30 +316,7 @@ class SwiftReachApi
         }
     }
 
-    public function getHotlineList()
-    {
-        return $this->get($this->getBaseUrl() . "/api/Hotlines/List")->json();
-    }
-
-
-    /**
-     * @param $voice_code
-     * @return \SwiftReachApi\Voice\MessageProfile
-     */
-    public function getMessageProfile($voice_code)
-    {
-        $json = $this->get($this->getBaseUrl() . "/api/Messages/Voice/" . $voice_code)->json();
-        if (is_null($json)) {
-            throw new SwiftReachException("Couldn't find a message profile with the voice code '" . $voice_code . "'");
-        }
-
-        $mp = new MessageProfile();
-        $mp->populateFromArray($json);
-
-        return $mp;
-    }
-
-    /**
+   /**
      * @param mixed $base_url
      */
     public function setBaseUrl($base_url)
