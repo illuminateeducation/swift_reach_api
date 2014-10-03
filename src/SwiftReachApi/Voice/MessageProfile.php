@@ -90,7 +90,7 @@ class MessageProfile extends AbstractVoiceMessage
 
     public function toJson()
     {
-        throw new SwiftReachException(__METHOD__." shouldn't be called.  Needs to be overridden.");
+        throw new SwiftReachException(__METHOD__ . " shouldn't be called.  Needs to be overridden.");
     }
 
     /**
@@ -120,8 +120,9 @@ class MessageProfile extends AbstractVoiceMessage
         }
     }
 
-    private function populateContentProfileFromArray($a){
-        foreach($a as $cp) {
+    private function populateContentProfileFromArray($a)
+    {
+        foreach ($a as $cp) {
             $content_profile = new VoiceAlertProfile();
             $content_profile->populateFromArray($cp);
             $this->addContentProfile($content_profile);
@@ -159,6 +160,7 @@ class MessageProfile extends AbstractVoiceMessage
         if (!$this->validateVisibility($visibility)) {
             throw new SwiftReachException("'" . $visibility . "' is not a valid message profile visibility type");
         }
+
         return $this;
     }
 
@@ -185,6 +187,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setAutoRetries($auto_retries)
     {
         $this->auto_retries = $auto_retries;
+
         return $this;
     }
 
@@ -202,6 +205,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setAutoRetriesInterval($auto_retries_interval)
     {
         $this->auto_retries_interval = $auto_retries_interval;
+
         return $this;
     }
 
@@ -219,6 +223,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setCapacityLimit($capacity_limit)
     {
         $this->capacity_limit = $capacity_limit;
+
         return $this;
     }
 
@@ -236,6 +241,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setChangeStamp($change_stamp)
     {
         $this->change_stamp = $change_stamp;
+
         return $this;
     }
 
@@ -253,6 +259,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setChangedByUser($changed_by_user)
     {
         $this->changed_by_user = $changed_by_user;
+
         return $this;
     }
 
@@ -270,6 +277,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setCongestionAttempts($congestion_attempts)
     {
         $this->congestion_attempts = $congestion_attempts;
+
         return $this;
     }
 
@@ -287,6 +295,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setCreateStamp($create_stamp)
     {
         $this->create_stamp = $create_stamp;
+
         return $this;
     }
 
@@ -304,6 +313,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setCreatedByUser($created_by_user)
     {
         $this->created_by_user = $created_by_user;
+
         return $this;
     }
 
@@ -321,6 +331,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setDeleteLocked($delete_locked)
     {
         $this->delete_locked = $delete_locked;
+
         return $this;
     }
 
@@ -338,6 +349,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setEnableAnsweringMachineDetection($enable_answering_machine_detection)
     {
         $this->enable_answering_machine_detection = $enable_answering_machine_detection;
+
         return $this;
     }
 
@@ -356,6 +368,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setContentProfiles($content_profile)
     {
         $this->content_profiles = $content_profile;
+
         return $this;
     }
 
@@ -366,6 +379,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function addContentProfile($content_profile)
     {
         $this->content_profiles[] = $content_profile;
+
         return $this;
     }
 
@@ -384,6 +398,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setEnableWaterfall($enable_waterfall)
     {
         $this->enable_waterfall = $enable_waterfall;
+
         return $this;
     }
 
@@ -401,6 +416,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setLastUsed($last_used)
     {
         $this->last_used = $last_used;
+
         return $this;
     }
 
@@ -418,6 +434,7 @@ class MessageProfile extends AbstractVoiceMessage
     public function setRingSeconds($ring_seconds)
     {
         $this->ring_seconds = $ring_seconds;
+
         return $this;
     }
 

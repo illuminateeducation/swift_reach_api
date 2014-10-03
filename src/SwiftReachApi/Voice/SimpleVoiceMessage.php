@@ -30,11 +30,11 @@ class SimpleVoiceMessage
     {
         return json_encode(
             array(
-                "Name"        => $this->getName(),
+                "Name" => $this->getName(),
                 "Description" => $this->getDescription(),
-                "CallerID"    => $this->getCallerId(),
-                "UseTTS"      => $this->getUseTts(),
-                "Content"     => $this->getContent(),
+                "CallerID" => $this->getCallerId(),
+                "UseTTS" => $this->getUseTts(),
+                "Content" => $this->getContent(),
             )
         );
     }
@@ -56,9 +56,9 @@ class SimpleVoiceMessage
     {
         // if content contains special characters, fail
         // if content is less than 10 characters
-        if(preg_match(self::CONTENT_REGEX, $content) || strlen($content) < 10){
+        if (preg_match(self::CONTENT_REGEX, $content) || strlen($content) < 10) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -69,10 +69,13 @@ class SimpleVoiceMessage
      */
     public function setContent($content)
     {
-        if(! $this->validateContent($content)){
-            throw new SwiftReachException("The message content contained characters that match ".self::CONTENT_REGEX." and are invalid or is shorter than 10 characters");
+        if (!$this->validateContent($content)) {
+            throw new SwiftReachException(
+                "The message content contained characters that match " . self::CONTENT_REGEX . " and are invalid or is shorter than 10 characters"
+            );
         }
         $this->content = $content;
+
         return $this;
     }
 
@@ -90,6 +93,7 @@ class SimpleVoiceMessage
     public function setUseTts($use_tts)
     {
         $this->use_tts = $use_tts;
+
         return $this;
     }
 

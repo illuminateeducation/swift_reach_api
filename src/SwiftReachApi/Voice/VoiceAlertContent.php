@@ -18,18 +18,17 @@ use SwiftReachApi\Voice\AudioSource\TtsUserDefinedFieldAudioSource;
 use SwiftReachApi\Voice\AudioSource\VoiceAudioSource;
 
 class VoiceAlertContent
-implements ArraySerialize
+    implements ArraySerialize
 {
-    CONST ALERT_ANSWERING_MACHINE           = "alert_answering_machine";
-    CONST ALERT_HUMAN                       = "alert_human";
-    CONST ALERT_RESPONSE_CONFIRM            = "alert_response_confirm";
-    CONST ALERT_ASK_FOR_PIN                 = "alert_ask_for_pin";
-    CONST ALERT_INVALID_PIN                 = "alert_invalid_pin";
-    CONST ALERT_HOME_ALONE_TRIGGER          = "alert_home_alone_triggered";
-    CONST ALERT_HOME_ALONE_OK_RESPONSE      = "alert_home_alone_ok_response";
-    CONST ALERT_HOME_ALONE_PANIC_RESPONSE   = "alert_home_alone_panic_response";
-    CONST ALERT_FEEDBACK_RECORDING_BEGIN    = "alert_feedback_recording_begin";
-
+    CONST ALERT_ANSWERING_MACHINE = "alert_answering_machine";
+    CONST ALERT_HUMAN = "alert_human";
+    CONST ALERT_RESPONSE_CONFIRM = "alert_response_confirm";
+    CONST ALERT_ASK_FOR_PIN = "alert_ask_for_pin";
+    CONST ALERT_INVALID_PIN = "alert_invalid_pin";
+    CONST ALERT_HOME_ALONE_TRIGGER = "alert_home_alone_triggered";
+    CONST ALERT_HOME_ALONE_OK_RESPONSE = "alert_home_alone_ok_response";
+    CONST ALERT_HOME_ALONE_PANIC_RESPONSE = "alert_home_alone_panic_response";
+    CONST ALERT_FEEDBACK_RECORDING_BEGIN = "alert_feedback_recording_begin";
 
 
     /** @var  string */
@@ -41,12 +40,12 @@ implements ArraySerialize
 
     public function populateFromArray($a)
     {
-        if(isset($a["VoiceItemType"])){
+        if (isset($a["VoiceItemType"])) {
             $this->setVoiceItemType($a["VoiceItemType"]);
         }
 
-        if(isset($a["AudioSource"])){
-            foreach($a["AudioSource"] as $as){
+        if (isset($a["AudioSource"])) {
+            foreach ($a["AudioSource"] as $as) {
                 $audio_source = $this->createAudioSourceByType($as["AudioType"]);
                 $audio_source->populateFromArray($as);
                 $this->addAudioSource($audio_source);;
@@ -57,7 +56,7 @@ implements ArraySerialize
     public function toArray()
     {
         $audio_sources = array();
-        foreach($this->getAudioSources() as $as){
+        foreach ($this->getAudioSources() as $as) {
             $audio_sources[] = $as->toArray();
         }
 
@@ -74,8 +73,7 @@ implements ArraySerialize
      */
     public function createAudioSourceByType($audio_source_type)
     {
-        switch($audio_source_type)
-        {
+        switch ($audio_source_type) {
             case AbstractAudioSource::AUDIO_SOURCE_VOICE:
             case "0":
                 return new VoiceAudioSource();
@@ -89,7 +87,7 @@ implements ArraySerialize
             case "3":
                 return new TtsUserDefinedFieldAudioSource();
             default:
-                throw new SwiftReachException("Couldn't create an audio source of type: '".$audio_source_type."'.");
+                throw new SwiftReachException("Couldn't create an audio source of type: '" . $audio_source_type . "'.");
         }
     }
 
@@ -107,6 +105,7 @@ implements ArraySerialize
                 return true;
             }
         }
+
         return false;
     }
 
@@ -125,7 +124,8 @@ implements ArraySerialize
         );
     }
 
-    public function addAudioSource(AbstractAudioSource $audio_source){
+    public function addAudioSource(AbstractAudioSource $audio_source)
+    {
         $this->audio_sources[] = $audio_source;
     }
 
@@ -146,6 +146,7 @@ implements ArraySerialize
     public function setAudioSources($audio_sources)
     {
         $this->audio_sources = $audio_sources;
+
         return $this;
     }
 
@@ -164,9 +165,10 @@ implements ArraySerialize
     public function setVoiceItemType($voice_item_type)
     {
         $this->voice_item_type = $voice_item_type;
-        if(!$this->validateVoiceItemType($this->voice_item_type)){
-            throw new SwiftReachException("'".$this->voice_item_type."' isn't a valid voice alert content type.");
+        if (!$this->validateVoiceItemType($this->voice_item_type)) {
+            throw new SwiftReachException("'" . $this->voice_item_type . "' isn't a valid voice alert content type.");
         }
+
         return $this;
     }
 

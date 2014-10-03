@@ -9,7 +9,8 @@
 namespace SwiftReachApi\Interfaces;
 
 
-interface ArraySerialize {
+interface ArraySerialize
+{
 
     /**
      * @return string Json Object serialized

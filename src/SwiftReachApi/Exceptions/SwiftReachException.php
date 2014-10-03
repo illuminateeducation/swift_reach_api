@@ -9,6 +9,7 @@
 namespace SwiftReachApi\Exceptions;
 
 
-class SwiftReachException extends \Exception {
+class SwiftReachException extends \Exception
+{
 
 } 

@@ -13,7 +13,7 @@ use SwiftReachApi\Exceptions\SwiftReachException;
 
 class CallReport
 {
-    const SORT_ASC  = "ASC";
+    const SORT_ASC = "ASC";
     const SORT_DESC = "DESC";
 
     /** @var int */
@@ -28,10 +28,10 @@ class CallReport
     /** @var int */
     private $current_Page = 0;
 
-    /**  @var string  */
+    /**  @var string */
     private $sort_field = "BeginStamp";
 
-    /** @var string  */
+    /** @var string */
     private $sort_direction = self::SORT_ASC;
 
     /**
@@ -40,8 +40,8 @@ class CallReport
      */
     function __construct(\SwiftReachApi\SwiftReachApi $sra, $job_code = null)
     {
-        $this->sra      = $sra;
-        if(!is_null($job_code)){
+        $this->sra = $sra;
+        if (!is_null($job_code)) {
             $this->job_code = $job_code;
         }
     }
@@ -53,6 +53,7 @@ class CallReport
     public function setJobCode($job_code)
     {
         $this->job_code = $job_code;
+
         return $this;
     }
 
@@ -71,6 +72,7 @@ class CallReport
     public function setSwiftReachApi($sra)
     {
         $this->sra = $sra;
+
         return $this;
     }
 
@@ -88,9 +90,10 @@ class CallReport
     public function setCurrentPage($current_page)
     {
         $this->current_Page = $current_page;
-        if($this->current_Page < 0){
+        if ($this->current_Page < 0) {
             throw new SwiftReachException("Current page of CallReport cannot be set to a negative number.");
         }
+
         return $this;
     }
 
@@ -109,9 +112,10 @@ class CallReport
     public function setPageSize($page_size)
     {
         $this->page_size = $page_size;
-        if($this->page_size < 0){
+        if ($this->page_size < 0) {
             throw new SwiftReachException("Page size of CallReport cannot be set to a negative number.");
         }
+
         return $this;
     }
 
@@ -130,6 +134,7 @@ class CallReport
     public function setSortDirection($sort_direction)
     {
         $this->sort_direction = $sort_direction;
+
         return $this;
     }
 
@@ -148,6 +153,7 @@ class CallReport
     public function setSortField($sort_field)
     {
         $this->sort_field = $sort_field;
+
         return $this;
     }
 
@@ -163,7 +169,8 @@ class CallReport
     /**
      * @return array
      */
-    public function getSearchableFields(){
+    public function getSearchableFields()
+    {
         return array(
             "BeginStamp",
             "Phone",
@@ -183,14 +190,18 @@ class CallReport
      * @return bool
      * @throws \SwiftReachApi\Exceptions\SwiftReachException
      */
-    private function validateField($field){
+    private function validateField($field)
+    {
         $searchable_fields = $this->getSearchableFields();
-        if(!in_array($field, $searchable_fields)){
-            throw new SwiftReachException("Field '" . $field . "' is not an acceptable search field(" . implode(
+        if (!in_array($field, $searchable_fields)) {
+            throw new SwiftReachException(
+                "Field '" . $field . "' is not an acceptable search field(" . implode(
                     ",",
                     $searchable_fields
-                ));
+                )
+            );
         }
+
         return true;
     }
 
@@ -204,11 +215,13 @@ class CallReport
     {
         $this->validateField($field);
 
-        if(!$this->getJobCode()){
+        if (!$this->getJobCode()) {
             throw new SwiftReachException("The job code must be set.");
         }
 
-        $url = $this->sra->getBaseUrl()."/api/Alerts/Reports/Voice/Search/Count/".$this->getJobCode()."/".$field."/".rawurlencode($search_criteria);
+        $url = $this->sra->getBaseUrl() . "/api/Alerts/Reports/Voice/Search/Count/" . $this->getJobCode(
+            ) . "/" . $field . "/" . rawurlencode($search_criteria);
+
         return (string)$this->sra->get($url)->getBody();
     }
 
@@ -218,11 +231,12 @@ class CallReport
      */
     public function getTotalCount()
     {
-        if(!$this->getJobCode()){
+        if (!$this->getJobCode()) {
             throw new SwiftReachException("The job code must be set.");
         }
 
-        $url = $this->sra->getBaseUrl()."/api/Alerts/Reports/Voice/Count/".$this->getJobCode();
+        $url = $this->sra->getBaseUrl() . "/api/Alerts/Reports/Voice/Count/" . $this->getJobCode();
+
         return (string)$this->sra->get($url)->getBody();
     }
 
@@ -285,10 +299,12 @@ class CallReport
             }
         );
         if (!empty($empty_fields)) {
-            throw new SwiftReachException("Could not produce the requested records because the following fields were blank: " . implode(
+            throw new SwiftReachException(
+                "Could not produce the requested records because the following fields were blank: " . implode(
                     ", ",
                     array_keys($empty_fields)
-                ));
+                )
+            );
         }
 
         return true;

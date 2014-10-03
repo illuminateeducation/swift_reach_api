@@ -15,7 +15,8 @@ use SwiftReachApi\Interfaces\JsonSerialize;
 use SwiftReachApi\Tests\Voice\VoiceContactArrayTest;
 use SwiftReachApi\Voice\VoiceContact;
 
-class VoiceContactArray implements JsonSerialize, ArraySerialize{
+class VoiceContactArray implements JsonSerialize, ArraySerialize
+{
 
     /**
      * @var array
@@ -28,10 +29,11 @@ class VoiceContactArray implements JsonSerialize, ArraySerialize{
     public function toArray()
     {
         $a = array();
-        foreach($this->getContacts() as $c){
-            /** @var $c VoiceContact  */
+        foreach ($this->getContacts() as $c) {
+            /** @var $c VoiceContact */
             $a[] = $c->toArray();
         }
+
         return $a;
     }
 
@@ -49,14 +51,15 @@ class VoiceContactArray implements JsonSerialize, ArraySerialize{
     public function setContacts($contacts)
     {
         $this->contacts = array();
-        foreach($contacts as $vc){
-            try{
+        foreach ($contacts as $vc) {
+            try {
                 $this->addContact($vc);
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 throw $e;
             }
 
         }
+
         return $this;
     }
 
@@ -76,6 +79,7 @@ class VoiceContactArray implements JsonSerialize, ArraySerialize{
     public function addContact(VoiceContact $vc)
     {
         $this->contacts[] = $vc;
+
         return $this;
     }
 

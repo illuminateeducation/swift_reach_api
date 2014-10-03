@@ -7,12 +7,13 @@
  */
 
 namespace SwiftReachApi\Voice;
+
 use SwiftReachApi\Interfaces\JsonSerialize;
 use SwiftReachApi\Interfaces\ArraySerialize;
 use SwiftReachApi\Exceptions\SwiftReachException;
 
 abstract class AbstractVoiceMessage
-implements JsonSerialize
+    implements JsonSerialize
 {
     CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:?\'" ]/';
 
@@ -50,9 +51,9 @@ implements JsonSerialize
     public function validateCallerId($caller_id)
     {
         // if caller id contains non-numeric values or is not ten digits long, fail
-        if( (preg_match('/[^0-9]/',$caller_id) || strlen($caller_id) != 10) && $caller_id != ""){
+        if ((preg_match('/[^0-9]/', $caller_id) || strlen($caller_id) != 10) && $caller_id != "") {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -87,11 +88,14 @@ implements JsonSerialize
      */
     public function setCallerId($caller_id)
     {
-        if($this->validateCallerId($caller_id) == false){
-            throw new SwiftReachException("'".$caller_id."' is not a valid caller id.  Must contain only 10 digits.");
+        if ($this->validateCallerId($caller_id) == false) {
+            throw new SwiftReachException(
+                "'" . $caller_id . "' is not a valid caller id.  Must contain only 10 digits."
+            );
         }
 
         $this->caller_id = $caller_id;
+
         return $this;
     }
 
@@ -110,6 +114,7 @@ implements JsonSerialize
     public function setDescription($description)
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -127,6 +132,7 @@ implements JsonSerialize
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -143,11 +149,12 @@ implements JsonSerialize
      */
     public function setVoiceCode($voice_code)
     {
-        if(!is_numeric($voice_code)){
-            throw new SwiftReachException("Voice code: '".$voice_code."' must be a numerical value.");
+        if (!is_numeric($voice_code)) {
+            throw new SwiftReachException("Voice code: '" . $voice_code . "' must be a numerical value.");
         }
 
         $this->voice_code = $voice_code;
+
         return $this;
     }
 

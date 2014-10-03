@@ -36,13 +36,13 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     /** @var array KeyValue */
     private $user_defined_fields = array();
 
-    function __construct($name, $guid ='')
+    function __construct($name, $guid = '')
     {
         $this->setName($name);
         $this->phones = array();
 
         // if guid isn't set generate it
-        if($guid == ''){
+        if ($guid == '') {
             $this->setGuid($this->generateGuid());
         }
     }
@@ -55,14 +55,15 @@ class VoiceContact implements JsonSerialize, ArraySerialize
      */
     public function generateGuid()
     {
-        mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
+        mt_srand((double)microtime() * 10000);//optional for php 4.2.0 and up.
         $charid = strtoupper(md5(uniqid(rand(), true)));
         $hyphen = chr(45);// "-"
-        $uuid = substr($charid, 0, 8).$hyphen
-            .substr($charid, 8, 4).$hyphen
-            .substr($charid,12, 4).$hyphen
-            .substr($charid,16, 4).$hyphen
-            .substr($charid,20,12);
+        $uuid = substr($charid, 0, 8) . $hyphen
+            . substr($charid, 8, 4) . $hyphen
+            . substr($charid, 12, 4) . $hyphen
+            . substr($charid, 16, 4) . $hyphen
+            . substr($charid, 20, 12);
+
         return $uuid;
     }
 
@@ -77,12 +78,12 @@ class VoiceContact implements JsonSerialize, ArraySerialize
         );
 
         // add email
-        if($this->getEmail()){
+        if ($this->getEmail()) {
             $a["Email"] = $this->getEmail();
         }
 
         // add the phones
-        if(count($this->getPhones())) {
+        if (count($this->getPhones())) {
             foreach ($this->getPhones() as $p) {
                 /** @var $p VoiceContactPhone */
                 $a["Phones"][] = $p->toArray();
@@ -90,7 +91,7 @@ class VoiceContact implements JsonSerialize, ArraySerialize
         }
 
         // add the user defined fields
-        if(count($this->getUserDefinedFields())) {
+        if (count($this->getUserDefinedFields())) {
             foreach ($this->getUserDefinedFields() as $udf) {
                 /** @var $udf KeyValue */
                 $a["UserDefined"][] = $udf->toArray();
@@ -120,9 +121,10 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function setGuid($guid)
     {
         $this->guid = $guid;
-        if(!$this->validateGuid($this->getGuid())){
-            throw new SwiftReachException("'".$this->getGuid()."' is not a valid GUID");
+        if (!$this->validateGuid($this->getGuid())) {
+            throw new SwiftReachException("'" . $this->getGuid() . "' is not a valid GUID");
         }
+
         return $this;
     }
 
@@ -140,6 +142,7 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -157,9 +160,10 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function setPhones($phones)
     {
         $this->phones = array();
-        foreach($phones as $p){
+        foreach ($phones as $p) {
             $this->addPhone($p);
         }
+
         return $this;
     }
 
@@ -170,6 +174,7 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function addPhone(VoiceContactPhone $phone)
     {
         $this->phones[] = $phone;
+
         return $this;
     }
 
@@ -196,9 +201,10 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function setEmail($email)
     {
         $this->email = $email;
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new SwiftReachException("'$email' is not a valid email address.");
         }
+
         return $this;
     }
 
@@ -216,9 +222,10 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function setUserDefinedFields($user_defined_fields)
     {
         $this->user_defined_fields = array();
-        foreach($user_defined_fields as $udf){
+        foreach ($user_defined_fields as $udf) {
             $this->addUserDefinedField($udf);
         }
+
         return $this;
     }
 
@@ -229,6 +236,7 @@ class VoiceContact implements JsonSerialize, ArraySerialize
     public function addUserDefinedField(KeyValue $user_defined_field)
     {
         $this->user_defined_fields[] = $user_defined_field;
+
         return $this;
     }
 

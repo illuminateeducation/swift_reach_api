@@ -12,11 +12,11 @@ namespace SwiftReachApi\Voice;
 use SwiftReachApi\Interfaces\ArraySerialize;
 
 class KeyValue
-implements ArraySerialize
+    implements ArraySerialize
 {
-    /** @var  string  */
+    /** @var  string */
     protected $key = '';
-    /** @var  string  */
+    /** @var  string */
 
     protected $value = '';
 
@@ -30,7 +30,7 @@ implements ArraySerialize
     public function toArray()
     {
         return array(
-            "Key" => $this->getKey(),
+            "Key"   => $this->getKey(),
             "Value" => $this->getValue(),
         );
     }
@@ -50,6 +50,7 @@ implements ArraySerialize
     public function setKey($key)
     {
         $this->key = $key;
+
         return $this;
     }
 
@@ -68,9 +69,9 @@ implements ArraySerialize
     public function setValue($value)
     {
         $this->value = $value;
+
         return $this;
     }
 
 
-
-} 
+}

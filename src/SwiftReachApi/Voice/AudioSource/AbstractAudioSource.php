@@ -12,12 +12,12 @@ namespace SwiftReachApi\Voice\AudioSource;
 use SwiftReachApi\Interfaces\ArraySerialize;
 
 abstract class AbstractAudioSource
-implements ArraySerialize
+    implements ArraySerialize
 {
-    const AUDIO_SOURCE_VOICE                    = "audio_source_voice";
-    const AUDIO_SOURCE_TTS_FIELD                = "audio_source_tts_field";
-    const AUDIO_SOURCE_TTS_TEXT                 = "audio_source_tts_text";
-    const AUDIO_SOURCE_TTS_USER_DEFINED_FIELD   = "audio_source_tts_user_defined_field";
+    const AUDIO_SOURCE_VOICE = "audio_source_voice";
+    const AUDIO_SOURCE_TTS_FIELD = "audio_source_tts_field";
+    const AUDIO_SOURCE_TTS_TEXT = "audio_source_tts_text";
+    const AUDIO_SOURCE_TTS_USER_DEFINED_FIELD = "audio_source_tts_user_defined_field";
 
     abstract public function getAudioType();
 
@@ -36,10 +36,10 @@ implements ArraySerialize
         $fields = get_object_vars($this);
         unset($fields["AudioType"]);
 
-        foreach($fields as $f => $value){
-            $key = implode("",array_map("ucfirst", explode("_", $f)));
-            if(isset($a[$key])){
-                $method = "set".$key;
+        foreach ($fields as $f => $value) {
+            $key = implode("", array_map("ucfirst", explode("_", $f)));
+            if (isset($a[$key])) {
+                $method = "set" . $key;
                 $this->$method($a[$key]);
             }
         }

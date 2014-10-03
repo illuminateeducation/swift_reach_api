@@ -36,6 +36,7 @@ class VoiceAlertProfile
         foreach ($this->getVoiceItems() as $vi) {
             $voice_items[] = $vi->toArray();
         }
+
         return array(
             "SpokenLanguage" => $this->getSpokenLanguage(),
             "TTY_Text"       => $this->getTtyText(),
@@ -45,15 +46,15 @@ class VoiceAlertProfile
 
     public function populateFromArray($a)
     {
-        if(isset($a["SpokenLanguage"])){
+        if (isset($a["SpokenLanguage"])) {
             $this->setSpokenLanguage($a["SpokenLanguage"]);
         }
-        if(isset($a["TTY_Text"])){
+        if (isset($a["TTY_Text"])) {
             $this->setTtyText($a["TTY_Text"]);
         }
 
-        if(isset($a["VoiceItem"])){
-            foreach($a["VoiceItem"] as $vi){
+        if (isset($a["VoiceItem"])) {
+            foreach ($a["VoiceItem"] as $vi) {
                 $voice_alert_profile = new VoiceAlertContent();
                 $voice_alert_profile->populateFromArray($vi);
                 $this->addVoiceAlertContent($voice_alert_profile);
@@ -82,6 +83,7 @@ class VoiceAlertProfile
     public function setSpokenLanguage($spoken_language)
     {
         $this->spoken_language = $spoken_language;
+
         return $this;
     }
 
@@ -99,6 +101,7 @@ class VoiceAlertProfile
     public function setTtyText($tty_text)
     {
         $this->tty_text = $tty_text;
+
         return $this;
     }
 
@@ -116,6 +119,7 @@ class VoiceAlertProfile
     public function setVoiceItems($voice_items)
     {
         $this->voice_items = $voice_items;
+
         return $this;
     }
 } 

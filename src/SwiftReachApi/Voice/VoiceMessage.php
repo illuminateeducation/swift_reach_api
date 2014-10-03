@@ -69,27 +69,27 @@ class VoiceMessage extends MessageProfile
     public function toJson()
     {
         $a = array(
-                '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
-                "Name"                            => $this->getName(),
-                "Description"                     => $this->getDescription(),
-                "DefaultSpokenLanguage"           => $this->getDefaultSpokenLanguage(),
-                "AutoReplays"                     => $this->getAutoReplays(),
-                "RequireResponse"                 => $this->isRequiredResponse(),
-                "ValidResponses"                  => $this->getValidResponses(),
-                "EnableAnsweringMachineDetection" => $this->isEnableAnsweringMachineDetection(),
-                "EnableAnsweringMachineMessage"   => $this->isEnableAnsweringMachineMessage(),
-                "CallerID"                        => $this->getCallerId(),
-                "CapacityLimit"                   => $this->getCapacityLimit(),
-                "RingSeconds"                     => $this->getRingSeconds(),
-                "CongestionAttempts"              => $this->getCongestionAttempts(),
-                "AutoRetries"                     => $this->getAutoRetries(),
-                "AutoRetriesInterval"             => $this->getAutoRetriesInterval(),
-                "EnableWaterfall"                 => $this->isEnableWaterfall(),
-                "VoiceType"                       => $this->getVoiceType(),
-            );
+            '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
+            "Name"                            => $this->getName(),
+            "Description"                     => $this->getDescription(),
+            "DefaultSpokenLanguage"           => $this->getDefaultSpokenLanguage(),
+            "AutoReplays"                     => $this->getAutoReplays(),
+            "RequireResponse"                 => $this->isRequiredResponse(),
+            "ValidResponses"                  => $this->getValidResponses(),
+            "EnableAnsweringMachineDetection" => $this->isEnableAnsweringMachineDetection(),
+            "EnableAnsweringMachineMessage"   => $this->isEnableAnsweringMachineMessage(),
+            "CallerID"                        => $this->getCallerId(),
+            "CapacityLimit"                   => $this->getCapacityLimit(),
+            "RingSeconds"                     => $this->getRingSeconds(),
+            "CongestionAttempts"              => $this->getCongestionAttempts(),
+            "AutoRetries"                     => $this->getAutoRetries(),
+            "AutoRetriesInterval"             => $this->getAutoRetriesInterval(),
+            "EnableWaterfall"                 => $this->isEnableWaterfall(),
+            "VoiceType"                       => $this->getVoiceType(),
+        );
 
         $a["ContentProfile"] = array();
-        foreach($this->getContentProfiles() as $cp){
+        foreach ($this->getContentProfiles() as $cp) {
             $a["ContentProfile"][] = $cp->toArray();
         }
 
@@ -112,6 +112,7 @@ class VoiceMessage extends MessageProfile
     public function setDefaultSpokenLanguage($default_spoken_language)
     {
         $this->default_spoken_language = $default_spoken_language;
+
         return $this;
     }
 
@@ -130,6 +131,7 @@ class VoiceMessage extends MessageProfile
     public function setRequiredResponse($required_response)
     {
         $this->required_response = $required_response;
+
         return $this;
     }
 
@@ -148,6 +150,7 @@ class VoiceMessage extends MessageProfile
     public function setValidResponses($valid_responses)
     {
         $this->valid_responses = $valid_responses;
+
         return $this;
     }
 
@@ -166,9 +169,12 @@ class VoiceMessage extends MessageProfile
     public function setAutoReplays($auto_replays)
     {
         $this->auto_replays = $auto_replays;
-        if(!is_numeric($this->getAutoReplays())){
-            throw new SwiftReachException("Auto Replay value must be a numeric value, '". $this->getAutoReplays()."' was given.");
+        if (!is_numeric($this->getAutoReplays())) {
+            throw new SwiftReachException(
+                "Auto Replay value must be a numeric value, '" . $this->getAutoReplays() . "' was given."
+            );
         }
+
         return $this;
     }
 
@@ -187,10 +193,9 @@ class VoiceMessage extends MessageProfile
     public function setEnableAnsweringMachineMessage($enable_answering_machine_message)
     {
         $this->enable_answering_machine_message = $enable_answering_machine_message;
+
         return $this;
     }
 
 
-
-
-} 
+}

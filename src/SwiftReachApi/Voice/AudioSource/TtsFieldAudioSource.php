@@ -11,14 +11,15 @@ namespace SwiftReachApi\Voice\AudioSource;
 
 use SwiftReachApi\Exceptions\SwiftReachException;
 
-class TtsFieldAudioSource extends AbstractAudioSource {
+class TtsFieldAudioSource extends AbstractAudioSource
+{
 
-    const TTS_FIELD_ENTITYNAME      = "tts_field_entityname";
-    const TTS_FIELD_PHONE           = "tts_field_phone";
-    const TTS_FIELD_DATE            = "tts_field_date";
-    const TTS_FIELD_TIME            = "tts_field_time";
-    const TTS_FIELD_DATETIME        = "tts_field_datetime";
-    const TTS_FIELD_ENTITYTAG       = "tts_field_entitytag";
+    const TTS_FIELD_ENTITYNAME = "tts_field_entityname";
+    const TTS_FIELD_PHONE = "tts_field_phone";
+    const TTS_FIELD_DATE = "tts_field_date";
+    const TTS_FIELD_TIME = "tts_field_time";
+    const TTS_FIELD_DATETIME = "tts_field_datetime";
+    const TTS_FIELD_ENTITYTAG = "tts_field_entitytag";
 
     protected $tts_field;
 
@@ -31,8 +32,8 @@ class TtsFieldAudioSource extends AbstractAudioSource {
     public function toArray()
     {
         return array(
-            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_FIELD, SwiftReach.Swift911.Core",
-            "TTSField" => $this->getTtsField(),
+            '$type'     => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_TTS_FIELD, SwiftReach.Swift911.Core",
+            "TTSField"  => $this->getTtsField(),
             "AudioType" => $this->getAudioType()
         );
     }
@@ -73,9 +74,10 @@ class TtsFieldAudioSource extends AbstractAudioSource {
     public function setTtsField($tts_field)
     {
         $this->tts_field = $tts_field;
-        if(!$this->validateTtsField($this->tts_field)){
-            throw new SwiftReachException("'".$this->tts_field."' is not a valid TTS field");
+        if (!$this->validateTtsField($this->tts_field)) {
+            throw new SwiftReachException("'" . $this->tts_field . "' is not a valid TTS field");
         }
+
         return $this;
     }
 

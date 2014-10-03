@@ -18,7 +18,7 @@ class VoiceAudioSource extends AbstractAudioSource
     public function toArray()
     {
         return array(
-            '$type' => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core",
+            '$type'             => "SwiftReach.Swift911.Core.Messages.Voice.AUDIO_SOURCE_VOICE, SwiftReach.Swift911.Core",
             "Content"           => $this->getContent(),
             "AutoGenerateVoice" => $this->isAutoGenerateVoice(),
             "FileVersion"       => $this->getFileVersion(),
@@ -41,6 +41,7 @@ class VoiceAudioSource extends AbstractAudioSource
     public function setAutoGenerateVoice($auto_generate_voice)
     {
         $this->auto_generate_voice = $auto_generate_voice;
+
         return $this;
     }
 
@@ -58,6 +59,7 @@ class VoiceAudioSource extends AbstractAudioSource
     public function setContent($content)
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -75,6 +77,7 @@ class VoiceAudioSource extends AbstractAudioSource
     public function setFileVersion($file_version)
     {
         $this->file_version = $file_version;
+
         return $this;
     }
 
@@ -92,6 +95,7 @@ class VoiceAudioSource extends AbstractAudioSource
     public function setVoiceCode($voice_code)
     {
         $this->voice_code = $voice_code;
+
         return $this;
     }
 

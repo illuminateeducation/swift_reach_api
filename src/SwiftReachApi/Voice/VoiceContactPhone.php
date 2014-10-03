@@ -12,7 +12,8 @@ namespace SwiftReachApi\Voice;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Interfaces\ArraySerialize;
 
-class VoiceContactPhone implements ArraySerialize{
+class VoiceContactPhone implements ArraySerialize
+{
 
     /**
      * @var string
@@ -58,12 +59,12 @@ class VoiceContactPhone implements ArraySerialize{
     public function toArray()
     {
         return array(
-            "Phone"                 => $this->getPhone(),
-            "Extension"             => $this->getExtention(),
-            "AnsDetectionOverride"  => $this->getAnsDetectionOverride(),
-            "OptInSMS"              => $this->getOptinSms(),
-            "PhoneType"             => $this->getPhoneType(),
-            "PhoneLabel"            => $this->getPhoneLabel()
+            "Phone"                => $this->getPhone(),
+            "Extension"            => $this->getExtention(),
+            "AnsDetectionOverride" => $this->getAnsDetectionOverride(),
+            "OptInSMS"             => $this->getOptinSms(),
+            "PhoneType"            => $this->getPhoneType(),
+            "PhoneLabel"           => $this->getPhoneLabel()
         );
     }
 
@@ -75,7 +76,7 @@ class VoiceContactPhone implements ArraySerialize{
      */
     public function validatePhone($phone)
     {
-        return ( preg_match('/[^0-9]/',$phone) == 0 && strlen($phone) == 10);
+        return (preg_match('/[^0-9]/', $phone) == 0 && strlen($phone) == 10);
     }
 
 
@@ -83,8 +84,8 @@ class VoiceContactPhone implements ArraySerialize{
     {
         return (
             is_numeric($ans_detection_override) &&
-            $ans_detection_override >=0 &&
-            $ans_detection_override <=2
+            $ans_detection_override >= 0 &&
+            $ans_detection_override <= 2
         );
     }
 
@@ -99,9 +100,10 @@ class VoiceContactPhone implements ArraySerialize{
     public function setAnsDetectionOverride($ans_detection_override)
     {
         $this->ans_detection_override = $ans_detection_override;
-        if(! $this->validateAnsDetectionOverride($this->getAnsDetectionOverride())){
+        if (!$this->validateAnsDetectionOverride($this->getAnsDetectionOverride())) {
             throw new SwiftReachException("Ans Detection Override must be a value between 0-2");
         }
+
         return $this;
     }
 
@@ -119,6 +121,7 @@ class VoiceContactPhone implements ArraySerialize{
     public function setExtention($extention)
     {
         $this->extention = $extention;
+
         return $this;
     }
 
@@ -136,6 +139,7 @@ class VoiceContactPhone implements ArraySerialize{
     public function setOptinSms($optin_sms)
     {
         $this->optin_sms = $optin_sms;
+
         return $this;
     }
 
@@ -153,9 +157,10 @@ class VoiceContactPhone implements ArraySerialize{
     public function setPhone($phone)
     {
         $this->phone = $phone;
-        if(!$this->validatePhone($this->phone)){
+        if (!$this->validatePhone($this->phone)) {
             throw new SwiftReachException("'{$phone}' is not a valid phone number.");
         }
+
         return $this;
     }
 
@@ -173,6 +178,7 @@ class VoiceContactPhone implements ArraySerialize{
     public function setPhoneLabel($phone_label)
     {
         $this->phone_label = $phone_label;
+
         return $this;
     }
 
@@ -190,6 +196,7 @@ class VoiceContactPhone implements ArraySerialize{
     public function setPhoneType($phone_type)
     {
         $this->phone_type = $phone_type;
+
         return $this;
     }
 

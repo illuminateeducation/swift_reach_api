@@ -48,17 +48,17 @@ class SwiftReachApi
     public function createSimpleVoiceMessage(SimpleVoiceMessage $message)
     {
         $path = "/api/Messages/Voice/Create/Simple";
-        if(!$this->getApiKey()){
+        if (!$this->getApiKey()) {
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
-        if(!$this->getBaseUrl()){
+        if (!$this->getBaseUrl()) {
             throw new SwiftReachException("Base url was not set.");
         }
 
         //test for empty fields
         $message->requiredFieldsSet();
 
-        $response = $this->post($this->getBaseUrl().$path, $message->toJson());
+        $response = $this->post($this->getBaseUrl() . $path, $message->toJson());
         $json = $response->json();
 
         $message_profile = new MessageProfile();
@@ -66,6 +66,7 @@ class SwiftReachApi
 
         return $message_profile;
     }
+
     /**
      * Create a voice message on the swift reach system.
      * @param AbstractVoiceMessage $message
@@ -75,10 +76,10 @@ class SwiftReachApi
     public function createVoiceMessage(AbstractVoiceMessage $voice_message)
     {
         $path = "/api/Messages/Voice/Create";
-        if(!$this->getApiKey()){
+        if (!$this->getApiKey()) {
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
-        if(!$this->getBaseUrl()){
+        if (!$this->getBaseUrl()) {
             throw new SwiftReachException("Base url was not set.");
         }
 
@@ -86,10 +87,10 @@ class SwiftReachApi
         $voice_message->requiredFieldsSet();
 
         $json = $voice_message->toJson();
-        $response = $this->post($this->getBaseUrl().$path, $json);
+        $response = $this->post($this->getBaseUrl() . $path, $json);
 
         $json = $response->json();
-        if(!isset($json["VoiceCode"])){
+        if (!isset($json["VoiceCode"])) {
             throw new SwiftReachException("Failed to create a new voice message");
         }
         $message_profile = new MessageProfile();
@@ -105,33 +106,33 @@ class SwiftReachApi
 
     public function sendMessageToContactArray(AbstractVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
     {
-        if(!$message->getVoiceCode()){
+        if (!$message->getVoiceCode()) {
             throw new SwiftReachException("No Voice Code was set.");
         }
 
         // without a matching name it won't display the caller id number
         // when the call is made, but the call will still go through
-        if(!$message->getName()){
+        if (!$message->getName()) {
             throw new SwiftReachException("The message name was not set or was blank.");
         }
 
-        if($hotline && preg_match('/[^0-9]/',$hotline) && strlen($hotline) != 10){
+        if ($hotline && preg_match('/[^0-9]/', $hotline) && strlen($hotline) != 10) {
             throw new SwiftReachException("Hotline numbers must be a valid 10 digit phone number");
         }
 
         $url_parts = array();
 
-        if($hotline){
+        if ($hotline) {
             $url_parts[] = "Publish";
             $url_parts[] = rawurlencode($message->getName());
             $url_parts[] = rawurlencode($message->getVoiceCode());
             $url_parts[] = rawurlencode($hotline);
-        }else{
+        } else {
             $url_parts[] = rawurlencode($message->getName());
             $url_parts[] = rawurlencode($message->getVoiceCode());
         }
 
-        $url = $this->getBaseUrl()."/api/Messages/Voice/Send/".implode("/", $url_parts);
+        $url = $this->getBaseUrl() . "/api/Messages/Voice/Send/" . implode("/", $url_parts);
 
         $response = $this->post($url, $contacts->toJson());
 
@@ -146,7 +147,8 @@ class SwiftReachApi
      */
     public function deleteVoiceMessage($voice_code)
     {
-        $url = $this->base_url . "/api/Messages/Voice/Delete/".$voice_code;
+        $url = $this->base_url . "/api/Messages/Voice/Delete/" . $voice_code;
+
         return $this->delete($url);
     }
 
@@ -163,30 +165,33 @@ class SwiftReachApi
             'Accept: application/json',
             'Expect:'
         );
-        try{
-            $response = $this->getGuzzleClient()->delete($url, array(
+        try {
+            $response = $this->getGuzzleClient()->delete(
+                $url,
+                array(
                     'config' => array(
                         'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => TRUE,
-                            CURLOPT_RETURNTRANSFER => TRUE,
-                            CURLOPT_CUSTOMREQUEST => "DELETE",
-                            CURLOPT_HTTPHEADER => $headers
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_CUSTOMREQUEST  => "DELETE",
+                            CURLOPT_HTTPHEADER     => $headers
                         )
                     )
-                ));
-        }
-        catch(ClientException $e){
+                )
+            );
+        } catch (ClientException $e) {
             $json = $e->getResponse()->json();
-            if(isset($json["Message"])){
+            if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
-            }else{
+            } else {
                 throw new SwiftReachException($e->getMessage());
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             throw new SwiftReachException($e->getMessage());
         }
 
         $body = (string)$response->getBody();
+
         return ($body === "0");
     }
 
@@ -199,10 +204,10 @@ class SwiftReachApi
      */
     public function uploadAudioFile($voice_code, $voice_fragment_code, $file, $file_type = null)
     {
-        $url = $this->base_url."/api/Messages/Voice/UploadAudio/$voice_code/$voice_fragment_code";
+        $url = $this->base_url . "/api/Messages/Voice/UploadAudio/$voice_code/$voice_fragment_code";
 
-        if(!empty($file_type)){
-            $url .= "/".$file_type;
+        if (!empty($file_type)) {
+            $url .= "/" . $file_type;
         }
 
         $headers = array(
@@ -211,31 +216,34 @@ class SwiftReachApi
             'Expect:'
         );
 
-        try{
-            $response = $this->getGuzzleClient()->post($url, array(
+        try {
+            $response = $this->getGuzzleClient()->post(
+                $url,
+                array(
                     'config' => array(
                         'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => TRUE,
-                            CURLOPT_RETURNTRANSFER => TRUE,
-                            CURLOPT_POST => TRUE,
-                            CURLOPT_POSTFIELDS => file_get_contents($file),
-                            CURLOPT_HTTPHEADER => $headers
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_POST           => true,
+                            CURLOPT_POSTFIELDS     => file_get_contents($file),
+                            CURLOPT_HTTPHEADER     => $headers
                         )
                     )
-                ));
-        }
-        catch(ClientException $e){
+                )
+            );
+        } catch (ClientException $e) {
             $json = $e->getResponse()->json();
-            if(isset($json["Message"])){
+            if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
-            }else{
+            } else {
                 throw new SwiftReachException($e->getMessage());
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             throw new SwiftReachException($e->getMessage());
         }
 
         $body = (string)$response->getBody();
+
         return ($body === "0");
     }
 
@@ -249,27 +257,29 @@ class SwiftReachApi
             'Expect:'
         );
 
-        try{
-            return $this->getGuzzleClient()->post($url, array(
+        try {
+            return $this->getGuzzleClient()->post(
+                $url,
+                array(
                     'config' => array(
                         'curl' => array(
-                            CURLOPT_FOLLOWLOCATION => TRUE,
-                            CURLOPT_RETURNTRANSFER => TRUE,
-                            CURLOPT_POST => TRUE,
-                            CURLOPT_POSTFIELDS => $body,
-                            CURLOPT_HTTPHEADER => $headers
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_POST           => true,
+                            CURLOPT_POSTFIELDS     => $body,
+                            CURLOPT_HTTPHEADER     => $headers
                         )
                     )
-            ));
-        }
-        catch(ClientException $e){
+                )
+            );
+        } catch (ClientException $e) {
             $json = $e->getResponse()->json();
-            if(isset($json["Message"])){
+            if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
-            }else{
+            } else {
                 throw new SwiftReachException($e->getMessage());
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             throw new SwiftReachException($e->getMessage());
         }
     }
@@ -282,24 +292,27 @@ class SwiftReachApi
             'Accept: application/json'
         );
 
-        try{
+        try {
 
-            return $this->getGuzzleClient()->get($url, array(
+            return $this->getGuzzleClient()->get(
+                $url,
+                array(
                     'config' => array(
                         'curl' => array(
-                            CURLOPT_RETURNTRANSFER => TRUE,
-                            CURLOPT_HTTPHEADER => $headers
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_HTTPHEADER     => $headers
                         )
                     )
-                ));
-        }catch(ClientException $e){
+                )
+            );
+        } catch (ClientException $e) {
             $json = $e->getResponse()->json();
-            if(isset($json["Message"])){
+            if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
-            }else{
+            } else {
                 throw new SwiftReachException($e->getMessage());
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             throw new SwiftReachException($e->getMessage());
         }
     }
@@ -318,12 +331,13 @@ class SwiftReachApi
     public function getMessageProfile($voice_code)
     {
         $json = $this->get($this->getBaseUrl() . "/api/Messages/Voice/" . $voice_code)->json();
-        if(is_null($json)){
-            throw new SwiftReachException("Couldn't find a message profile with the voice code '".$voice_code."'");
+        if (is_null($json)) {
+            throw new SwiftReachException("Couldn't find a message profile with the voice code '" . $voice_code . "'");
         }
 
         $mp = new MessageProfile();
         $mp->populateFromArray($json);
+
         return $mp;
     }
 
@@ -333,9 +347,10 @@ class SwiftReachApi
     public function setBaseUrl($base_url)
     {
         $this->base_url = $base_url;
-        if(!filter_var($base_url, FILTER_VALIDATE_URL)){
-            throw new SwiftReachException("'".$base_url."' is not a valid url.");
+        if (!filter_var($base_url, FILTER_VALIDATE_URL)) {
+            throw new SwiftReachException("'" . $base_url . "' is not a valid url.");
         }
+
         return $this;
     }
 
@@ -353,9 +368,10 @@ class SwiftReachApi
     public function setApiKey($api_key)
     {
         $this->api_key = $api_key;
-        if(!$api_key){
-            throw new SwiftReachException("'".$api_key."' is not a valid api key.");
+        if (!$api_key) {
+            throw new SwiftReachException("'" . $api_key . "' is not a valid api key.");
         }
+
         return $this;
     }
 
@@ -373,6 +389,7 @@ class SwiftReachApi
     public function setGuzzleClient($guzzle_client)
     {
         $this->guzzle_client = $guzzle_client;
+
         return $this;
     }
 
