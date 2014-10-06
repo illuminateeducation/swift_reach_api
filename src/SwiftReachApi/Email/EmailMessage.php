@@ -74,7 +74,6 @@ class EmailMessage implements JsonSerialize
             "DeleteLocked" => $this->isDeleteLocked()
         );
 
-
         foreach($this->getContent() as $c){
             $a["Content"][] = $c->toArray();
         }

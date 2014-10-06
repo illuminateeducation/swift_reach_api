@@ -52,6 +52,24 @@ class SwiftReachApi
         $response = $this->post($this->getBaseUrl() . $path, $email_message->toJson());
         return $response->getBody();
     }
+
+    public function sentEmailToArrayOfConatcts(EmailMessage $email_message, VoiceContactArray $contacts)
+    {
+        if (!$email_message->getEmailCode()) {
+            throw new SwiftReachException("No Email Code was set.");
+        }
+        if (!$email_message->getName()) {
+            throw new SwiftReachException("The email name wasn't set.");
+        }
+        $url_parts = array(
+            $this->getBaseUrl(),
+            "api/Messages/Email/Send",
+            rawurlencode($email_message->getName()),
+            rawurlencode($email_message->getEmailCode())
+        );
+        $url = implode('/', $url_parts);
+        return $this->post($url, $contacts->toJson());
+    }
     public function getEmailMessage($email_code)
     {
         $a = $this->get($this->getBaseUrl()."/api/Messages/Email/".$email_code)->json();
