@@ -6,11 +6,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Email\EmailMessage;
+use SwiftReachApi\Email\SimpleEmailMessage;
 use SwiftReachApi\Exceptions\SwiftReachException;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
-use SwiftReachApi\Voice\VoiceContactArray;
+use SwiftReachApi\Contact\ContactArray;
 
 class SwiftReachApi
 {
@@ -42,6 +43,27 @@ class SwiftReachApi
     //-----------------------------------------------------------------------------------------------------------------
     //  Start Email Functions
     //-----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Create a simple email function
+     *
+     * @param SimpleEmailMessage $simple_email obj
+     *
+     * @return mixed
+     * @throws SwiftReachException
+     * @link
+     */
+    public function createSimpleEmailMessage(SimpleEmailMessage $simple_email)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Email/Create/Simple";
+
+        //test for empty fields
+        $simple_email->requiredFieldsSet();
+
+        $response = $this->post($url, $simple_email->toJson());
+        return $response->getBody();
+    }
+
     public function createEmailMessage(EmailMessage $email_message)
     {
         $path = "/api/Messages/Email/Create";
@@ -53,7 +75,7 @@ class SwiftReachApi
         return $response->getBody();
     }
 
-    public function sentEmailToArrayOfConatcts(EmailMessage $email_message, VoiceContactArray $contacts)
+    public function sentEmailToArrayOfConatcts(EmailMessage $email_message, ContactArray $contacts)
     {
         if (!$email_message->getEmailCode()) {
             throw new SwiftReachException("No Email Code was set.");
@@ -99,10 +121,8 @@ class SwiftReachApi
         $message->requiredFieldsSet();
 
         $response = $this->post($this->getBaseUrl() . $path, $message->toJson());
-        $json = $response->json();
-
         $message_profile = new MessageProfile();
-        $message_profile->populateFromArray($json);
+        $message_profile->populateFromArray($response->json());
 
         return $message_profile;
     }
@@ -139,12 +159,12 @@ class SwiftReachApi
         return $message_profile;
     }
 
-    public function sendSimpleVoiceMessageToContactArray($message, VoiceContactArray $contacts, $hotline = '')
+    public function sendSimpleVoiceMessageToContactArray($message, ContactArray $contacts, $hotline = '')
     {
         return $this->sendMessageToContactArray($message, $contacts, $hotline);
     }
 
-    public function sendMessageToContactArray(AbstractVoiceMessage $message, VoiceContactArray $contacts, $hotline = '')
+    public function sendMessageToContactArray(AbstractVoiceMessage $message, ContactArray $contacts, $hotline = '')
     {
         if (!$message->getVoiceCode()) {
             throw new SwiftReachException("No Voice Code was set.");

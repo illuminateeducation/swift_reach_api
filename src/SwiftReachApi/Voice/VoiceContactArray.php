@@ -9,78 +9,13 @@
 namespace SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\ArraySerialize;
-use SwiftReachApi\Interfaces\JsonSerialize;
-use SwiftReachApi\Tests\Voice\VoiceContactArrayTest;
-use SwiftReachApi\Voice\VoiceContact;
+use SwiftReachApi\Contact\ContactArray;
 
-class VoiceContactArray implements JsonSerialize, ArraySerialize
+/**
+ * Class VoiceContactArray
+ * @package SwiftReachApi\Voice
+ * @deprecated Moved to ContactArray.  Still exists for backwards compatibility
+ */
+class VoiceContactArray  extends ContactArray
 {
-
-    /**
-     * @var array
-     */
-    private $contacts = array();
-
-    /**
-     * @return string Json Object serialized
-     */
-    public function toArray()
-    {
-        $a = array();
-        foreach ($this->getContacts() as $c) {
-            /** @var $c VoiceContact */
-            $a[] = $c->toArray();
-        }
-
-        return $a;
-    }
-
-    /**
-     * @return string Json Object serialized
-     */
-    public function toJson()
-    {
-        return json_encode($this->toArray());
-    }
-
-    /**
-     * @param array $contacts
-     */
-    public function setContacts($contacts)
-    {
-        $this->contacts = array();
-        foreach ($contacts as $vc) {
-            try {
-                $this->addContact($vc);
-            } catch (\Exception $e) {
-                throw $e;
-            }
-
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getContacts()
-    {
-        return $this->contacts;
-    }
-
-
-    /**
-     * @param VoiceContact $vc
-     * @return VoiceContactArray
-     */
-    public function addContact(VoiceContact $vc)
-    {
-        $this->contacts[] = $vc;
-
-        return $this;
-    }
-
 } 

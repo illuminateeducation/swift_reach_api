@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alai
- * Date: 8/20/14
- * Time: 11:39 AM
- */
 
-namespace SwiftReachApi\Tests\Voice;
+namespace SwiftReachApi\Tests\Contact;
 
 
-use SwiftReachApi\Voice\KeyValue;
-use SwiftReachApi\Voice\VoiceContactPhone;
+use SwiftReachApi\Contact\KeyValue;
+use SwiftReachApi\Contact\ContactPhone;
 
 class KeyValueTest extends \PHPUnit_Framework_TestCase
 {

@@ -7,9 +7,9 @@ use GuzzleHttp\Message\Request;
 use GuzzleHttp\Stream\Stream;
 use SwiftReachApi\SwiftReachApi;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
-use SwiftReachApi\Voice\VoiceContact;
-use SwiftReachApi\Voice\VoiceContactArray;
-use SwiftReachApi\Voice\VoiceContactPhone;
+use SwiftReachApi\Contact\Contact;
+use SwiftReachApi\Contact\ContactArray;
+use SwiftReachApi\Contact\ContactPhone;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
@@ -27,13 +27,13 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
      */
     public $svm;
 
-    /** @var  VoiceContactArray */
-    public $vca;
+    /** @var  ContactArray */
+    public $ca;
 
-    /** @var  VoiceContact */
+    /** @var  Contact */
     public $contact1;
 
-    /** @var  VoiceContact */
+    /** @var  Contact */
     public $contact2;
 
     public function setup()
@@ -57,18 +57,18 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
 
         //create contact array
-        $this->vca = new VoiceContactArray();
+        $this->ca = new ContactArray();
 
-        $this->contact1 = new VoiceContact("Test Tester");
-        $contact1_phone = new VoiceContactPhone("5555555555","home");
+        $this->contact1 = new Contact("Test Tester");
+        $contact1_phone = new ContactPhone("5555555555","home");
         $this->contact1->setPhones(array($contact1_phone));
 
-        $this->contact2 = new VoiceContact("two phone test");
-        $contact2_phone1 = new VoiceContactPhone("5555555555","home");
-        $contact2_phone2 = new VoiceContactPhone("5555555555","home");
+        $this->contact2 = new Contact("two phone test");
+        $contact2_phone1 = new ContactPhone("5555555555","home");
+        $contact2_phone2 = new ContactPhone("5555555555","home");
         $this->contact2->setPhones(array($contact2_phone1, $contact2_phone2));
 
-        $this->vca->addContact($this->contact1)->addContact($this->contact2);
+        $this->ca->addContact($this->contact1)->addContact($this->contact2);
     }
 
     private function mockResponses($responses)
@@ -203,7 +203,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $svm = new SimpleVoiceMessage();
         $svm->setVoiceCode("123456");
 
-        $job_id = $this->sra->createSimpleVoiceMessage($svm, $this->vca);
+        $job_id = $this->sra->createSimpleVoiceMessage($svm, $this->ca);
     }
 
 
@@ -229,7 +229,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         // add voice code from previously created voice code
         $this->svm->setVoiceCode("123456");
 
-        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca);
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->ca);
     }
 
     /**
@@ -240,7 +240,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         //set up mock
         $this->createMockForSuccessfulSimpleVoiceSending();
 
-        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca);
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->ca);
 
     }
 
@@ -258,7 +258,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
         $svm->setVoiceCode("123456");
 
-        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($svm, $this->vca);
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($svm, $this->ca);
     }
 
     public function testHotlineSendSimpleVoiceMessage()
@@ -268,7 +268,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
 
         // add voice code from previously created voice code
         $this->svm->setVoiceCode("123456");
-        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca, "5551234785");
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->ca, "5551234785");
     }
 
     /**
@@ -280,7 +280,7 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $this->createMockForSuccessfulSimpleVoiceSending();
 
         $this->svm->setVoiceCode("123456");
-        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->vca, "abc");
+        $job_id = $this->sra->sendSimpleVoiceMessageToContactArray($this->svm, $this->ca, "abc");
     }
 
 

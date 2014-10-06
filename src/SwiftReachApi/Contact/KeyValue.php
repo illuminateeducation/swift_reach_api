@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alai
- * Date: 10/2/14
- * Time: 12:12 PM
- */
 
-namespace SwiftReachApi\Voice;
+namespace SwiftReachApi\Contact;
 
 
 use SwiftReachApi\Interfaces\ArraySerialize;
