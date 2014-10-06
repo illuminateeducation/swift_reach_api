@@ -149,6 +149,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param array $content
+     * @return this
      */
     public function setContent($content)
     {
@@ -178,6 +179,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param string $default_spoken_language
+     * @return this
      */
     public function setDefaultSpokenLanguage($default_spoken_language)
     {
@@ -232,6 +234,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param string $from_address
+     * @return this
      */
     public function setFromAddress($from_address)
     {
@@ -250,6 +253,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param string $from_name
+     * @return this
      */
     public function setFromName($from_name)
     {
@@ -267,6 +271,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param string $name
+     * @return this
      */
     public function setName($name)
     {
@@ -285,6 +290,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param string $visibility
+     * @return this
      */
     public function setVisibility($visibility)
     {
@@ -307,6 +313,7 @@ class EmailMessage implements JsonSerialize
 
     /**
      * @param timestamp $change_stamp
+     * @return this
      */
     public function setChangeStamp($change_stamp)
     {
