@@ -95,6 +95,9 @@ class SwiftReachApi
     public function getEmailMessage($email_code)
     {
         $a = $this->get($this->getBaseUrl()."/api/Messages/Email/".$email_code)->json();
+        if(is_null($a)){
+            throw new SwiftReachException("Unable to retrieve an email with the code: '$email_code'");
+        }
         $em = new EmailMessage();
         $em->populateFromArray($a);
         return $em;
