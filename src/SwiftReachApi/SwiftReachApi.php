@@ -12,6 +12,8 @@ use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Contact\ContactArray;
+use SwiftReachApi\Voice\VoiceAlertContent;
+use SwiftReachApi\Voice\VoiceMessage;
 
 class SwiftReachApi
 {
@@ -139,12 +141,6 @@ class SwiftReachApi
     public function createVoiceMessage(AbstractVoiceMessage $voice_message)
     {
         $path = "/api/Messages/Voice/Create";
-        if (!$this->getApiKey()) {
-            throw new SwiftReachException("Swift Reach Api key was not set.");
-        }
-        if (!$this->getBaseUrl()) {
-            throw new SwiftReachException("Base url was not set.");
-        }
 
         //test for empty fields
         $voice_message->requiredFieldsSet();
@@ -231,12 +227,37 @@ class SwiftReachApi
         if (is_null($json)) {
             throw new SwiftReachException("Couldn't find a message profile with the voice code '" . $voice_code . "'");
         }
-
-        $mp = new MessageProfile();
+        // cast to correct voice type
+        $mp = $this->createMessageProfileByVoiceType($json["VoiceType"]);
         $mp->populateFromArray($json);
 
         return $mp;
     }
+
+
+    private function createMessageProfileByVoiceType($voice_type)
+    {
+        switch($voice_type)
+        {
+            case AbstractVoiceMessage::VOICE_TYPE_VOICE_MESSAGE:
+            case 14:
+                return new VoiceMessage();
+                break;
+        }
+    }
+
+    public function createContentProfileHelper($text, $item_type = VoiceAlertContent::ALERT_HUMAN,  $use_tts = true)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Voice/Helpers/TextToVoiceContentObject/$item_type/";
+        $url .= ($use_tts ? "true" : "false");
+
+        $json = $this->post($url, $text)->json();
+        $vac = new VoiceAlertContent();
+        $vac->populateFromArray($json);
+
+        return $vac;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Voice
     //-----------------------------------------------------------------------------------------------------------------
@@ -264,6 +285,29 @@ class SwiftReachApi
         $body = (string)$response->getBody();
 
         return ($body === "0");
+    }
+
+    /**
+     * @param $url
+     * @return bool
+     * @throws SwiftReachException
+     */
+    private function put($url, $body)
+    {
+        $headers = array(
+            'Content-type: application/json',
+            'SwiftAPI-Key: ' . $this->getApiKey(),
+            'Accept: application/json',
+            'Expect:'
+        );
+        $curl_opts = array(
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST  => "PUT",
+            CURLOPT_POSTFIELDS     => $body,
+            CURLOPT_HTTPHEADER     => $headers
+        );
+        return $this->restAction('post', $url, $curl_opts);
     }
 
     /**
@@ -375,6 +419,9 @@ class SwiftReachApi
      */
     public function getBaseUrl()
     {
+        if(!$this->base_url){
+            throw new SwiftReachException("Base url was not set.");
+        }
         return $this->base_url;
     }
 
@@ -396,6 +443,9 @@ class SwiftReachApi
      */
     public function getApiKey()
     {
+        if (!$this->api_key) {
+            throw new SwiftReachException("Swift Reach Api key was not set.");
+        }
         return $this->api_key;
     }
 

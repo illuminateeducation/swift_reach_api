@@ -28,7 +28,7 @@ class MessageProfile extends AbstractVoiceMessage
     /**
      * @var int
      */
-    protected $ring_seconds = 60;
+    protected $ring_seconds = 3;
     /**
      * @var int
      */

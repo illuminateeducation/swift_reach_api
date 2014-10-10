@@ -123,7 +123,7 @@ class SimpleVoiceMessageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException SwiftReachApi\Exceptions\SwiftReachException
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testNonNumericVoiceCode()
     {
