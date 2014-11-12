@@ -83,7 +83,7 @@ class SimpleVoiceMessageTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->svm->validateContent("This message is ok."));
 
-        $this->assertFalse($this->svm->validateContent("This message is \"not\" ok @."));
+        $this->assertFalse($this->svm->validateContent("This message is \"not\" ok @:*&^% ."));
 
         $this->assertFalse($this->svm->validateContent("Too Short"));
     }

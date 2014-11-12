@@ -40,7 +40,14 @@ class SwiftReachApi
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
 
-        $this->guzzle_client = new Client();
+        $this->guzzle_client = new Client(
+            array(
+                "defaults" => array(
+                    "timeout"         => 5,
+                    "connect_timeout" => 5
+                )
+            )
+        );
     }
     //-----------------------------------------------------------------------------------------------------------------
     //  Start Email Functions
@@ -390,7 +397,7 @@ class SwiftReachApi
                 )
             );
         } catch (ClientException $e) {
-            $json = $e->getResponse()->json();
+            $json = json_decode($e->getResponse()->getBody(), true);
             if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
             } else {

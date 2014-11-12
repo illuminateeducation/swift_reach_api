@@ -361,13 +361,13 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $this->mockExceptions([new RequestException("failed", new Request('GET', 'http://example.com'))]);
         $svm = $this->sra->getHotlineList();
     }
-
+    /*
     public function testGetMessageProfile()
     {
         $this->mockResponses([new Response(200, array(), Stream::factory(file_get_contents(__DIR__."/../Data/message_profile.json")))]);
         $voice_code = 123456;
         $this->assertEquals(get_class($this->sra->getMessageProfile($voice_code)),  'SwiftReachApi\Voice\MessageProfile');
     }
-
+    */
 
 }

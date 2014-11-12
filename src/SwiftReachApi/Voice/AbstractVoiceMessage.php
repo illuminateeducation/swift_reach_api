@@ -15,7 +15,7 @@ use SwiftReachApi\Exceptions\SwiftReachException;
 abstract class AbstractVoiceMessage
     implements JsonSerialize
 {
-    CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:?\'\[\]"\/ ]/';
+    CONST CONTENT_REGEX = '/[^0-9a-zA-Z.:!@\(\),\'\[\]"\/ -]/';
 
     CONST VOICE_TYPE_VOICE_MESSAGE              = "voice_message";
     CONST VOICE_TYPE_SECURE_VOICE_MESSAGE       = "secure_voice_message";
