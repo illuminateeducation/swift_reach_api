@@ -43,8 +43,8 @@ class SwiftReachApi
         $this->guzzle_client = new Client(
             array(
                 "defaults" => array(
-                    "timeout"         => 5,
-                    "connect_timeout" => 5
+                    "timeout"         => 30,
+                    "connect_timeout" => 30
                 )
             )
         );
@@ -258,7 +258,7 @@ class SwiftReachApi
         $url = $this->getBaseUrl() . "/api/Messages/Voice/Helpers/TextToVoiceContentObject/$item_type/";
         $url .= ($use_tts ? "true" : "false");
 
-        $json = $this->post($url, $text)->json();
+        $json = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
         $vac = new VoiceAlertContent();
         $vac->populateFromArray($json);
 
