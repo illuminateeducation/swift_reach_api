@@ -48,16 +48,6 @@ class ContactArrayTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, count($this->ca->getContacts()));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testNonVoiceContactContactAdd()
-    {
-        $vc = array("test");
-        $this->ca->setContacts(array($vc));
-    }
-
-
     public function testToJson()
     {
         $a = array(
