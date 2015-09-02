@@ -185,6 +185,16 @@ class CallReport
         );
     }
 
+    public function getJobProgress()
+    {
+        $url = $this->sra->getBaseUrl() . "/api/Alerts/Progress/" . $this->getJobCode();
+        try {
+            return $this->sra->get($url)->json();
+        } catch (\Exception $e) {
+            throw new SwiftReachException($e->getMessage());
+        }
+    }
+
     /**
      * @param $field
      * @return bool

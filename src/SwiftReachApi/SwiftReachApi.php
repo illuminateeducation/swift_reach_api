@@ -3,6 +3,7 @@ namespace SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Email\EmailMessage;
@@ -396,7 +397,7 @@ class SwiftReachApi
                     )
                 )
             );
-        } catch (ClientException $e) {
+        } catch (BadResponseException $e) {
             $json = json_decode($e->getResponse()->getBody(), true);
             if (isset($json["Message"])) {
                 throw new SwiftReachException($json["Message"]);
