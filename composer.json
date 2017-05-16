@@ -1,5 +1,5 @@
 {
-	"name": "illuminate-education/swift-reach-api",
+	"name": "illuminateeducation/swift-reach-api",
 	"type": "library",
 	"description": "PHP library to integrate with SwiftReach",
 	"keywords": ["php", "swiftreach"],
