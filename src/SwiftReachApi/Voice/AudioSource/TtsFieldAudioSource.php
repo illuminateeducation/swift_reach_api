@@ -6,10 +6,10 @@
  * Time: 12:35 PM
  */
 
-namespace SwiftReachApi\Voice\AudioSource;
+namespace Ied\SwiftReachApi\Voice\AudioSource;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 class TtsFieldAudioSource extends AbstractAudioSource
 {

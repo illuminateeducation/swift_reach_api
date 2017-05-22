@@ -73,7 +73,9 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
     public function testPopulateFromArray()
     {
 
-        $email_json = json_decode(file_get_contents(__DIR__."/../../Data/Email/email_message.json"), true);
+        $email_json = json_decode(file_get_contents(
+                                      __DIR__ . "/../../Data/Email/email_message.json"
+                                  ), true);
         $em = new EmailMessage();
         $em->populateFromArray($email_json);
 
@@ -107,7 +109,9 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
 
     public function testToJson()
     {
-        $email_json = json_decode(file_get_contents(__DIR__."/../../Data/Email/email_message.json"), true);
+        $email_json = json_decode(file_get_contents(
+                                      __DIR__ . "/../../Data/Email/email_message.json"
+                                  ), true);
         $em = new EmailMessage();
         $em->populateFromArray($email_json);
 

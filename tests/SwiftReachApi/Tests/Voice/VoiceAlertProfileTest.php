@@ -48,7 +48,7 @@ class VoiceAlertProfileTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulateFromArray()
     {
-        $a = json_decode(file_get_contents(__DIR__."/../../Data/voice_alert_profile.json"), true);
+        $a = json_decode(file_get_contents(__DIR__ . "/../../Data/voice_alert_profile.json"), true);
         $this->vap->populateFromArray($a);
         $this->assertEquals($a["SpokenLanguage"], $this->vap->getSpokenLanguage());
         $this->assertEquals($a["TTY_Text"], $this->vap->getTtyText());
@@ -57,7 +57,7 @@ class VoiceAlertProfileTest extends \PHPUnit_Framework_TestCase
 
     public function testToArray()
     {
-        $a = json_decode(file_get_contents(__DIR__."/../../Data/voice_alert_profile.json"), true);
+        $a = json_decode(file_get_contents(__DIR__ . "/../../Data/voice_alert_profile.json"), true);
         $this->vap->populateFromArray($a);
         $x = $this->vap->toArray();
 

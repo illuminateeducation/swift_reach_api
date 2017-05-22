@@ -6,14 +6,14 @@
  * Time: 12:18 PM
  */
 
-namespace SwiftReachApi\Email;
+namespace Ied\SwiftReachApi\Email;
 
-use SwiftReachApi\Interfaces\ArraySerialize;
-use SwiftReachApi\Email\EmailTextSource\AbstractEmailTextSource;
-use SwiftReachApi\Email\EmailTextSource\TextEmailTextSource;
-use SwiftReachApi\Email\EmailTextSource\AutoFieldEmailTextSource;
-use SwiftReachApi\Email\EmailTextSource\UserDefinedFieldEmailTextSource;
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Email\EmailTextSource\AbstractEmailTextSource;
+use Ied\SwiftReachApi\Email\EmailTextSource\TextEmailTextSource;
+use Ied\SwiftReachApi\Email\EmailTextSource\AutoFieldEmailTextSource;
+use Ied\SwiftReachApi\Email\EmailTextSource\UserDefinedFieldEmailTextSource;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 
 class EmailContent

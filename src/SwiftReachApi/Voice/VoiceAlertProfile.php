@@ -6,10 +6,10 @@
  * Time: 12:18 PM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 class VoiceAlertProfile
     implements ArraySerialize

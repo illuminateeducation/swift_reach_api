@@ -1,19 +1,20 @@
 <?php
-namespace SwiftReachApi;
+
+namespace Ied\SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
-use SwiftReachApi\Email\EmailMessage;
-use SwiftReachApi\Email\SimpleEmailMessage;
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Voice\AbstractVoiceMessage;
-use SwiftReachApi\Voice\MessageProfile;
-use SwiftReachApi\Voice\SimpleVoiceMessage;
-use SwiftReachApi\Contact\ContactArray;
-use SwiftReachApi\Voice\VoiceAlertContent;
-use SwiftReachApi\Voice\VoiceMessage;
+use Ied\SwiftReachApi\Email\EmailMessage;
+use Ied\SwiftReachApi\Email\SimpleEmailMessage;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Voice\AbstractVoiceMessage;
+use Ied\SwiftReachApi\Voice\MessageProfile;
+use Ied\SwiftReachApi\Voice\SimpleVoiceMessage;
+use Ied\SwiftReachApi\Contact\ContactArray;
+use Ied\SwiftReachApi\Voice\VoiceAlertContent;
+use Ied\SwiftReachApi\Voice\VoiceMessage;
 
 class SwiftReachApi
 {
