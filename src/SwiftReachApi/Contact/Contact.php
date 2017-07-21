@@ -28,6 +28,12 @@ class Contact
     /** @var  string email address */
     private $email;
 
+    /** @var string */
+    private $sms_phone;
+
+    /** @var int  */
+    private $sms_network = 0;
+
     /** @var array KeyValue */
     private $user_defined_fields = array();
 
@@ -63,7 +69,7 @@ class Contact
     }
 
     /**
-     * @return string Json Object serialized
+     * @return array Json Object serialized
      */
     public function toArray()
     {
@@ -75,6 +81,11 @@ class Contact
         // add email
         if ($this->getEmail()) {
             $a["Email"] = $this->getEmail();
+        }
+
+        if ($this->getSmsPhone()) {
+            $a["SMSPhone"] = $this->getSmsPhone();
+            $a["SMSNetwork"] = $this->getSmsNetwork();
         }
 
         // add the phones
@@ -202,6 +213,39 @@ class Contact
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getSmsPhone()
+    {
+        return $this->sms_phone;
+    }
+
+    /**
+     * @param string $sms_phone
+     */
+    public function setSmsPhone($sms_phone)
+    {
+        $this->sms_phone = $sms_phone;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSmsNetwork()
+    {
+        return $this->sms_network;
+    }
+
+    /**
+     * @param int $sms_network
+     */
+    public function setSmsNetwork($sms_network)
+    {
+        $this->sms_network = $sms_network;
+    }
+
 
     /**
      * @return array
