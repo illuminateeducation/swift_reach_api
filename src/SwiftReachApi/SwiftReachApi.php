@@ -317,6 +317,14 @@ class SwiftReachApi
         return $json;
     }
 
+    public function getSmsMessage($sms_code)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/".$sms_code;
+        $json = $this->get($url)->json();
+
+        return $json;
+    }
+
     public function updateSmsMessage($sms_code, SmsMessage $sms_message)
     {
         if(!$sms_message->getSmsCode()) {

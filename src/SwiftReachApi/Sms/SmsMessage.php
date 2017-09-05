@@ -56,7 +56,7 @@ class SmsMessage implements JsonSerialize
     protected $default_spoken_language = "English";
 
     /** @var array */
-    protected $content = [];
+    protected $body = [];
 
     /** @var  string */
     protected $reply_type;
@@ -94,7 +94,7 @@ class SmsMessage implements JsonSerialize
             "ReplyConfirmation"     => $this->getReplyConfirmation(),
         ];
 
-        foreach ($this->getContent() as $c) {
+        foreach ($this->getBody() as $c) {
             $a["Body"][] = $c->toArray();
         }
 
@@ -109,7 +109,7 @@ class SmsMessage implements JsonSerialize
             $func = "get" . $field;
 
             $value = $this->$func();
-            if ($value == "") {
+            if ($value == "" || ($field == "Body" && empty($value))) {
                 $missing_fields[] = $field;
             }
         }
@@ -157,10 +157,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param timestamp $create_stamp
+     *
+     * @return SmsMessage
      */
     public function setCreateStamp($create_stamp)
     {
         $this->create_stamp = $create_stamp;
+
+        return $this;
     }
 
     /**
@@ -173,10 +177,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param timestamp $change_stamp
+     *
+     * @return SmsMessage
      */
     public function setChangeStamp($change_stamp)
     {
         $this->change_stamp = $change_stamp;
+
+        return $this;
     }
 
     /**
@@ -189,10 +197,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param timestamp $last_used
+     *
+     * @return SmsMessage
      */
     public function setLastUsed($last_used)
     {
         $this->last_used = $last_used;
+
+        return $this;
     }
 
     /**
@@ -205,10 +217,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $created_by_user
+     *
+     * @return SmsMessage
      */
     public function setCreatedByUser($created_by_user)
     {
         $this->created_by_user = $created_by_user;
+
+        return $this;
     }
 
     /**
@@ -221,10 +237,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $changed_by_user
+     *
+     * @return SmsMessage
      */
     public function setChangedByUser($changed_by_user)
     {
         $this->changed_by_user = $changed_by_user;
+
+        return $this;
     }
 
     /**
@@ -237,10 +257,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $sms_code
+     *
+     * @return SmsMessage
      */
     public function setSmsCode($sms_code)
     {
         $this->sms_code = $sms_code;
+
+        return $this;
     }
 
     /**
@@ -253,10 +277,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $name
+     *
+     * @return SmsMessage
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -269,10 +297,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $description
+     *
+     * @return SmsMessage
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -285,10 +317,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $from_name
+     *
+     * @return SmsMessage
      */
     public function setFromName($from_name)
     {
         $this->from_name = $from_name;
+
+        return $this;
     }
 
     /**
@@ -301,10 +337,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $from_address
+     *
+     * @return SmsMessage
      */
     public function setFromAddress($from_address)
     {
         $this->from_address = $from_address;
+
+        return $this;
     }
 
     /**
@@ -317,33 +357,39 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $default_spoken_language
+     *
+     * @return SmsMessage
      */
     public function setDefaultSpokenLanguage($default_spoken_language)
     {
         $this->default_spoken_language = $default_spoken_language;
+
+        return $this;
     }
 
     /**
      * @return array
      */
-    public function getContent()
+    public function getBody()
     {
-        return $this->content;
+        return $this->body;
     }
 
     /**
-     * @param array $content
+     * @param array $body
+     *
+     * @return SmsMessage
      */
-    public function setContent($content)
+    public function setBody($body)
     {
-        $this->content = $content;
-    }
-
-    public function addContent(SmsContent $content)
-    {
-        $this->content[] = $content;
+        $this->body = $body;
 
         return $this;
+    }
+
+    public function addContent(SmsContent $sms_content)
+    {
+        $this->body[] = $sms_content;
     }
 
     /**
@@ -356,10 +402,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $reply_type
+     *
+     * @return SmsMessage
      */
     public function setReplyType($reply_type)
     {
         $this->reply_type = $reply_type;
+
+        return $this;
     }
 
     /**
@@ -372,10 +422,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $reply_criteria
+     *
+     * @return SmsMessage
      */
     public function setReplyCriteria($reply_criteria)
     {
         $this->reply_criteria = $reply_criteria;
+
+        return $this;
     }
 
     /**
@@ -388,10 +442,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param int $reply_window
+     *
+     * @return SmsMessage
      */
     public function setReplyWindow($reply_window)
     {
         $this->reply_window = $reply_window;
+
+        return $this;
     }
 
     /**
@@ -404,10 +462,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $reply_confirmation
+     *
+     * @return SmsMessage
      */
     public function setReplyConfirmation($reply_confirmation)
     {
         $this->reply_confirmation = $reply_confirmation;
+
+        return $this;
     }
 
     /**
@@ -420,10 +482,14 @@ class SmsMessage implements JsonSerialize
 
     /**
      * @param string $visibility
+     *
+     * @return SmsMessage
      */
     public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
+
+        return $this;
     }
 
     /**
@@ -434,9 +500,6 @@ class SmsMessage implements JsonSerialize
         return $this->delete_locked;
     }
 
-    /**
-     * @param bool $delete_locked
-     */
     public function setDeleteLocked($delete_locked)
     {
         $this->delete_locked = $delete_locked;

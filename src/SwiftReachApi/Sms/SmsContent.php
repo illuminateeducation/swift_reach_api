@@ -53,9 +53,9 @@ class SmsContent implements ArraySerialize
 
         if (isset($a["Body"])) {
             foreach ($a["Body"] as $ets) {
-                $email_text_source = $this->createEmailTextSourceByType($ets["TextType"]);
+                $email_text_source = $this->createSmsTextSourceByType($ets["TextType"]);
                 $email_text_source->populateFromArray($ets);
-                $this->addBody($email_text_source);;
+                $this->addBodyPart($email_text_source);
             }
         }
     }
@@ -63,6 +63,7 @@ class SmsContent implements ArraySerialize
     /**
      * @param $sms_text_source
      *
+     * @return AbstractSmsTextSource
      * @throws SwiftReachException
      */
     public function createSmsTextSourceByType($sms_text_source)
@@ -78,8 +79,7 @@ class SmsContent implements ArraySerialize
             case "2":
                 return new UserDefinedFieldSmsTextSource();
             default:
-                throw new SwiftReachException("Couldn't create an sms text source of type: '" . $sms_text_source
-                    . "'.");
+                throw new SwiftReachException("Couldn't create sms text source of type: '" . $sms_text_source . "'.");
         }
     }
 
@@ -93,10 +93,14 @@ class SmsContent implements ArraySerialize
 
     /**
      * @param string $spoken_language
+     *
+     * @return SmsContent
      */
     public function setSpokenLanguage($spoken_language)
     {
         $this->spoken_language = $spoken_language;
+
+        return $this;
     }
 
     /**
@@ -109,10 +113,14 @@ class SmsContent implements ArraySerialize
 
     /**
      * @param string $subject
+     *
+     * @return SmsContent
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
+        return $this;
     }
 
     /**
@@ -125,10 +133,14 @@ class SmsContent implements ArraySerialize
 
     /**
      * @param array $body
+     *
+     * @return SmsContent
      */
     public function setBody($body)
     {
         $this->body = $body;
+
+        return $this;
     }
 
     public function addBodyPart(AbstractSmsTextSource $txtSource)
