@@ -5,9 +5,11 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use SwiftReachApi\Contact\ContactArray;
+use SwiftReachApi\Email\EmailContent;
 use SwiftReachApi\Email\EmailMessage;
 use SwiftReachApi\Email\SimpleEmailMessage;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Sms\SmsContent;
 use SwiftReachApi\Sms\SmsMessage;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
@@ -136,6 +138,18 @@ class SwiftReachApi
         $em->populateFromArray($a);
         return $em;
     }
+
+    public function textToEmailSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Email/Helpers/TextToEmailSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+
+        $emailMessage = New EmailContent();
+        $emailMessage->populateFromArray(["Body" => $textSources]);
+
+        return $emailMessage->getBody();
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Email
     //-----------------------------------------------------------------------------------------------------------------
@@ -335,6 +349,17 @@ class SwiftReachApi
         $json = $this->put($url, $sms_message->toJson())->json();
 
         return $json;
+    }
+
+    public function textToSmsSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Helpers/TextToSMSSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+        
+        $smsContent = New SmsContent();
+        $smsContent->populateFromArray(["Body" => $textSources]);
+
+        return $smsContent->getBody();
     }
 
     //-----------------------------------------------------------------------------------------------------------------

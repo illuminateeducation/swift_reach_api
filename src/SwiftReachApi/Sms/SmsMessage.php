@@ -390,6 +390,8 @@ class SmsMessage implements JsonSerialize
     public function addContent(SmsContent $sms_content)
     {
         $this->body[] = $sms_content;
+
+        return $this;
     }
 
     /**
