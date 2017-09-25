@@ -1,0 +1,8 @@
+{
+  "Name": "Illuminate Notification",
+  "Description": "New Message Notification",
+  "FromName": "Illuminate Communications",
+  "FromAddress": "no-reply@illuminateed.com",
+  "Subject": "subject line",
+  "Body": "Simple Email Body"
+}

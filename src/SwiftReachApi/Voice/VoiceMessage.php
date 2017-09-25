@@ -69,7 +69,9 @@ class VoiceMessage extends MessageProfile
     public function toJson()
     {
         $a = array(
+
             '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
+
             "Name"                            => $this->getName(),
             "Description"                     => $this->getDescription(),
             "DefaultSpokenLanguage"           => $this->getDefaultSpokenLanguage(),

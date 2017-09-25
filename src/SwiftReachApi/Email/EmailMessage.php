@@ -64,6 +64,7 @@ class EmailMessage implements JsonSerialize
     public function toJson()
     {
         $a = array(
+            "EmailCode" => $this->getEmailCode(),
             "Name" => $this->getName(),
             "Description" => $this->getDescription(),
             "FromName" => $this->getFromName(),

@@ -102,7 +102,29 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
         $contents = $this->em->getContent();
         $this->assertEquals(1, count($contents));
         $this->assertEquals(1, substr_count(get_class(array_pop($contents)),"EmailContent"));
+    }
 
+    /** @expectedException SwiftReachApi\Exceptions\SwiftReachException */
+    public function testMissingFieldsRequired()
+    {
+        $this->em
+            ->setName('email_message')
+            ->setDescription('email description')
+            ->setFromAddress('example@example.com')
+            ->setFromName('');
+
+        $this->em->requiredFieldsSet();
+    }
+
+    public function testAllFieldsRequired()
+    {
+        $this->em
+            ->setName('email_message')
+            ->setDescription('email description')
+            ->setFromAddress('example@example.com')
+            ->setFromName('John Smith');
+
+        $this->em->requiredFieldsSet();
     }
 
     public function testToJson()
@@ -125,4 +147,3 @@ class EmailMessageTest extends \PHPUnit_Framework_TestCase
     }
 
 }
- 

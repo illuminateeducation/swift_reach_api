@@ -31,6 +31,7 @@ class ContactArrayTest extends \PHPUnit_Framework_TestCase {
         $this->contact2 = new Contact("two phone test");
         $contact2_phone1 = new ContactPhone("5555555555","home");
         $contact2_phone2 = new ContactPhone("5555555555","home");
+        $this->contact2->setSmsPhone('5551234567');
         $this->contact2->setPhones(array($contact2_phone1, $contact2_phone2));
     }
 
@@ -46,6 +47,22 @@ class ContactArrayTest extends \PHPUnit_Framework_TestCase {
         // make sure it clears the original array
         $this->ca->setContacts(array($this->contact1));
         $this->assertEquals(1, count($this->ca->getContacts()));
+    }
+
+    public function testSmsPhoneAccess()
+    {
+        $expected_sms = '5551234567';
+        $this->contact1->setSmsPhone($expected_sms);
+
+        $this->assertEquals($expected_sms, $this->contact1->getSmsPhone());
+    }
+
+    public function testSmsNetworkAccess()
+    {
+        $expected_network = 'network';
+        $this->contact1->setSmsNetwork($expected_network);
+
+        $this->assertEquals($expected_network, $this->contact1->getSmsNetwork());
     }
 
     public function testToJson()

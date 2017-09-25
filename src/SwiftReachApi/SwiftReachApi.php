@@ -3,15 +3,17 @@ namespace SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
+use SwiftReachApi\Contact\ContactArray;
+use SwiftReachApi\Email\EmailContent;
 use SwiftReachApi\Email\EmailMessage;
 use SwiftReachApi\Email\SimpleEmailMessage;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Sms\SmsContent;
+use SwiftReachApi\Sms\SmsMessage;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
 use SwiftReachApi\Voice\MessageProfile;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
-use SwiftReachApi\Contact\ContactArray;
 use SwiftReachApi\Voice\VoiceAlertContent;
 use SwiftReachApi\Voice\VoiceMessage;
 
@@ -80,8 +82,33 @@ class SwiftReachApi
         //test for empty fields
         $email_message->requiredFieldsSet();
 
-        $response = $this->post($this->getBaseUrl() . $path, $email_message->toJson());
-        return $response->getBody();
+        return $this->post($this->getBaseUrl() . $path, $email_message->toJson())->json();
+    }
+
+    public function updateEmailMessage($email_code, EmailMessage $email_message)
+    {
+        $path = "/api/Messages/Email/Update/$email_code";
+
+        //test for empty fields
+        $email_message->requiredFieldsSet();
+
+        return $this->put($this->getBaseUrl() . $path, $email_message->toJson())->json();
+    }
+
+    public function sendAlertToContacts(ContactArray $contacts, $voice_code = 0, $sms_code = 0, $email_code = 0)
+    {
+        $url_parts = [
+            'TaskName'  => uniqid(),
+            'VoiceCode' => $voice_code,
+            'FaxCode'   => 0,
+            'SMSCode'   => $sms_code,
+            'EmailCode' => $email_code,
+            'PagerCode' => 0,
+        ];
+
+        $url = '/api/Alerts/Send/' . implode('/', $url_parts);
+
+        return $this->post($this->getBaseUrl() . $url, $contacts->toJson())->json();
     }
 
     public function sentEmailToArrayOfConatcts(EmailMessage $email_message, ContactArray $contacts)
@@ -111,6 +138,18 @@ class SwiftReachApi
         $em->populateFromArray($a);
         return $em;
     }
+
+    public function textToEmailSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Email/Helpers/TextToEmailSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+
+        $emailMessage = New EmailContent();
+        $emailMessage->populateFromArray(["Body" => $textSources]);
+
+        return $emailMessage->getBody();
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Email
     //-----------------------------------------------------------------------------------------------------------------
@@ -265,9 +304,68 @@ class SwiftReachApi
         return $vac;
     }
 
+    public function updateVoiceMessage($voice_code, VoiceMessage $voice_message)
+    {
+        if(!$voice_message->getVoiceCode()) {
+            throw new SwiftReachException('Voice code is required in the body of the API');
+        }
+
+        $url = $this->getBaseUrl() . "/api/Messages/Voice/Update/".$voice_code;
+        $json = $this->put($url, $voice_message->toJson())->json();
+
+        return $json;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Voice
     //-----------------------------------------------------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //  Start sms Functions
+    //-----------------------------------------------------------------------------------------------------------------
+    public function createSmsMessage(SmsMessage $sms_message)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Create";
+        $json = $this->post($url, $sms_message->toJson())->json();
+
+        return $json;
+    }
+
+    public function getSmsMessage($sms_code)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/".$sms_code;
+        $json = $this->get($url)->json();
+
+        return $json;
+    }
+
+    public function updateSmsMessage($sms_code, SmsMessage $sms_message)
+    {
+        if(!$sms_message->getSmsCode()) {
+            throw new SwiftReachException('SMS code is required in the body of the API');
+        }
+
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Update/".$sms_code;
+        $json = $this->put($url, $sms_message->toJson())->json();
+
+        return $json;
+    }
+
+    public function textToSmsSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Helpers/TextToSMSSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+        
+        $smsContent = New SmsContent();
+        $smsContent->populateFromArray(["Body" => $textSources]);
+
+        return $smsContent->getBody();
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //  End sms Functions
+    //-----------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @param $url
@@ -314,7 +412,7 @@ class SwiftReachApi
             CURLOPT_POSTFIELDS     => $body,
             CURLOPT_HTTPHEADER     => $headers
         );
-        return $this->restAction('post', $url, $curl_opts);
+        return $this->restAction('put', $url, $curl_opts);
     }
 
     /**
