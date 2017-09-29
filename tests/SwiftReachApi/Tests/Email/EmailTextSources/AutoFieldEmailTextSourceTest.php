@@ -49,6 +49,14 @@ class AutoFieldEmailTextSourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(6, count($this->auto->getFieldTypes()));
     }
 
+    public function testSetFieldTypeInConstructor()
+    {
+        $expected_field_type = AutoFieldEmailTextSource::AUTO_FIELD_ENTITY_NAME;
+        $source = new AutoFieldEmailTextSource($expected_field_type);
+
+        $this->assertEquals($expected_field_type, $source->getFieldType());
+    }
+
     public function testToArray()
     {
         $this->auto->setFieldType(AutoFieldEmailTextSource::AUTO_FIELD_DATE);
@@ -58,4 +66,3 @@ class AutoFieldEmailTextSourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($a["TextType"], $this->auto->getTextType());
     }
 }
- 

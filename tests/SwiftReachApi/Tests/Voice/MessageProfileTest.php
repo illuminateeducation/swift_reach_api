@@ -64,12 +64,30 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MessageProfile::VISIBILITY_TYPE_HIDDEN, $this->mp->getVisibility());
     }
 
+    public function testVoiceTypeAccessor()
+    {
+        $this->assertNull($this->mp->getVoiceType());
+    }
+
     /**
      * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
     public function testInvalidVisiblity()
     {
         $this->mp->setVisibility('invalid-visibility');
+    }
+
+    /**
+     *  @expectedException \SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testToJson()
+    {
+        $this->mp->toJson();
+    }
+
+    public function testRequiredFieldsSetDoesntThrowAnException()
+    {
+        $this->mp->requiredFieldsSet();
     }
 
     public function testPopulateFromArray()
@@ -107,4 +125,3 @@ class MessageProfileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, substr_count(get_class($this->mp->getContentProfiles()),"VoiceAlertProfile"));
     }
 }
- 
