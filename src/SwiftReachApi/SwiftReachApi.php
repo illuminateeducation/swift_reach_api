@@ -9,6 +9,7 @@ use SwiftReachApi\Email\EmailContent;
 use SwiftReachApi\Email\EmailMessage;
 use SwiftReachApi\Email\SimpleEmailMessage;
 use SwiftReachApi\Exceptions\SwiftReachException;
+use SwiftReachApi\Report\AlertCampaignProgress;
 use SwiftReachApi\Sms\SmsContent;
 use SwiftReachApi\Sms\SmsMessage;
 use SwiftReachApi\Voice\AbstractVoiceMessage;
@@ -366,6 +367,27 @@ class SwiftReachApi
     //  End sms Functions
     //-----------------------------------------------------------------------------------------------------------------
 
+
+    /**
+     * @param $job_code
+     *
+     * @return AlertCampaignProgress
+     * @throws SwiftReachException
+     */
+    public function getAlertCampaignProgress($job_code)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Progress/".$job_code;
+        $responseBody = (string)$this->get($url)->getBody();
+
+        if (empty($responseBody)) {
+            throw new SwiftReachException('Unable to retrieve progress for job_code: '. $job_code);
+        }
+
+        $campaignReport = new AlertCampaignProgress();
+        $campaignReport->populateFromArray(json_decode($responseBody));
+
+        return $campaignReport;
+    }
 
     /**
      * @param $url
