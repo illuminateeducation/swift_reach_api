@@ -389,6 +389,25 @@ class SwiftReachApi
         return $campaignReport;
     }
 
+
+    public function downloadCallRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Voice/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
+
+    public function downloadSmsRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Text/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
+
+    public function downloadEmailRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Email/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
+
     /**
      * @param $url
      * @return bool
