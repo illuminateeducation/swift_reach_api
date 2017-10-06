@@ -71,7 +71,6 @@ class VoiceMessage extends MessageProfile
         $a = array(
 
             '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
-
             "Name"                            => $this->getName(),
             "Description"                     => $this->getDescription(),
             "DefaultSpokenLanguage"           => $this->getDefaultSpokenLanguage(),
@@ -89,6 +88,10 @@ class VoiceMessage extends MessageProfile
             "EnableWaterfall"                 => $this->isEnableWaterfall(),
             "VoiceType"                       => $this->getVoiceType(),
         );
+
+        if ($this->getVoiceCode()) {
+            $a['VoiceCode'] = $this->getVoiceCode();
+        }
 
         $a["ContentProfile"] = array();
         foreach ($this->getContentProfiles() as $cp) {
