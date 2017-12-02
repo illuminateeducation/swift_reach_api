@@ -96,6 +96,18 @@ class SwiftReachApi
         return $this->put($this->getBaseUrl() . $path, $email_message->toJson())->json();
     }
 
+    /**
+     * @param $email_code
+     * @return bool
+     * @throws SwiftReachException
+     */
+    public function deleteEmailMessage($email_code)
+    {
+        $url = $this->base_url . "/api/Messages/Email/Delete/" . $email_code;
+
+        return $this->delete($url);
+    }
+
     public function sendAlertToContacts(ContactArray $contacts, $voice_code = 0, $sms_code = 0, $email_code = 0)
     {
         $url_parts = [
@@ -350,6 +362,18 @@ class SwiftReachApi
         $json = $this->put($url, $sms_message->toJson())->json();
 
         return $json;
+    }
+
+    /**
+     * @param $sms_code
+     * @return bool
+     * @throws SwiftReachException
+     */
+    public function deleteSmsMessage($sms_code)
+    {
+        $url = $this->base_url . "/api/Messages/Text/Delete/" . $sms_code;
+
+        return $this->delete($url);
     }
 
     public function textToSmsSourceArrayHelper($text)
