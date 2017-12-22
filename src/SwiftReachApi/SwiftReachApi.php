@@ -32,26 +32,55 @@ class SwiftReachApi
      */
     private $base_url;
 
+    /**
+     * @var array
+     * default request options
+     */
+    private $defaults;
 
     /**
      * @var \GuzzleHttp\Client
      */
     private $guzzle_client;
 
-    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com")
+    /**
+     * SwiftReachApi constructor.
+     * @param $api_key
+     * @param string $base_url
+     * @param array $defaults
+     */
+    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com", array $defaults = [])
     {
+        $default_defaults = $this->getDefaultDefaults();
+
+        $defaults = array_merge(
+            $default_defaults,
+            $defaults
+        );
+
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
+        $this->setDefaults($defaults);
 
         $this->guzzle_client = new Client(
             array(
-                "defaults" => array(
-                    "timeout"         => 30,
-                    "connect_timeout" => 30
-                )
+                "defaults" => $default_defaults
             )
         );
     }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultDefaults()
+    {
+        $default_defaults = [
+            "timeout"         => 30,
+            "connect_timeout" => 30,
+        ];
+        return $default_defaults;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  Start Email Functions
     //-----------------------------------------------------------------------------------------------------------------
@@ -617,6 +646,32 @@ class SwiftReachApi
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
         return $this->api_key;
+    }
+
+    /**
+     * @param array $defaults
+     * @return SwiftReachApi
+     * @throws SwiftReachException
+     */
+    public function setDefaults(array $defaults)
+    {
+        $this->defaults = $defaults;
+        if (empty($defaults)) {
+            throw new SwiftReachException("Defaults array is not a valid array.");
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     * @throws SwiftReachException
+     */
+    public function getDefaults()
+    {
+        if (empty($this->defaults)) {
+            throw new SwiftReachException("Defaults array was not set.");
+        }
+        return $this->defaults;
     }
 
     /**
