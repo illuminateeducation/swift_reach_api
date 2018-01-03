@@ -36,7 +36,7 @@ class SwiftReachApi
      * @var array
      * default request options
      */
-    private $defaults;
+    private $request_options;
 
     /**
      * @var \GuzzleHttp\Client
@@ -47,24 +47,24 @@ class SwiftReachApi
      * SwiftReachApi constructor.
      * @param $api_key
      * @param string $base_url
-     * @param array $defaults
+     * @param array $request_options
      */
-    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com", array $defaults = [])
+    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com", array $request_options = [])
     {
-        $default_defaults = $this->getDefaultDefaults();
+        $default_options = $this->getDefaultRequestOptions();
 
-        $defaults = array_merge(
-            $default_defaults,
-            $defaults
+        $request_options = array_merge(
+            $default_options,
+            $request_options
         );
 
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
-        $this->setDefaults($defaults);
+        $this->setDefaults($request_options);
 
         $this->guzzle_client = new Client(
             array(
-                "defaults" => $default_defaults
+                "defaults" => $default_options
             )
         );
     }
@@ -72,13 +72,13 @@ class SwiftReachApi
     /**
      * @return array
      */
-    protected function getDefaultDefaults()
+    protected function getDefaultRequestOptions()
     {
-        $default_defaults = [
-            "timeout"         => 30,
-            "connect_timeout" => 30,
+        $default_options = [
+            "timeout"         => 5,
+            "connect_timeout" => 5,
         ];
-        return $default_defaults;
+        return $default_options;
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -649,14 +649,14 @@ class SwiftReachApi
     }
 
     /**
-     * @param array $defaults
+     * @param array $request_options
      * @return SwiftReachApi
      * @throws SwiftReachException
      */
-    public function setDefaults(array $defaults)
+    public function setRequestOptions(array $request_options)
     {
-        $this->defaults = $defaults;
-        if (empty($defaults)) {
+        $this->request_options = $request_options;
+        if (empty($request_options)) {
             throw new SwiftReachException("Defaults array is not a valid array.");
         }
         return $this;
@@ -666,12 +666,12 @@ class SwiftReachApi
      * @return array
      * @throws SwiftReachException
      */
-    public function getDefaults()
+    public function getRequestOptions()
     {
-        if (empty($this->defaults)) {
+        if (empty($this->request_options)) {
             throw new SwiftReachException("Defaults array was not set.");
         }
-        return $this->defaults;
+        return $this->request_options;
     }
 
     /**

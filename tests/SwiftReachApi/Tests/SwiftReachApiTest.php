@@ -105,14 +105,14 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($base_url, $sra->getBaseUrl());
 
 
-        $defaults = [
-            'timeout'         => 30,
-            'connect_timeout' => 45,
+        $request_options = [
+            'timeout'         => 10,
+            'connect_timeout' => 15,
         ];
-        $sra = new SwiftReachApi($key, $base_url, $defaults);
+        $sra = new SwiftReachApi($key, $base_url, $request_options);
         $this->assertEquals($key, $sra->getApiKey());
         $this->assertEquals($base_url, $sra->getBaseUrl());
-        $this->assertEquals($defaults, $sra->getDefaults());
+        $this->assertEquals($request_options, $sra->getRequestOptions());
     }
 
     public function testAccessApiKey()
