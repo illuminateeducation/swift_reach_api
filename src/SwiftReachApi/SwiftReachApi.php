@@ -60,7 +60,7 @@ class SwiftReachApi
 
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
-        $this->setDefaults($request_options);
+        $this->setRequestOptions($request_options);
 
         $this->guzzle_client = new Client(
             array(
