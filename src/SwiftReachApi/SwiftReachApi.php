@@ -32,26 +32,55 @@ class SwiftReachApi
      */
     private $base_url;
 
+    /**
+     * @var array
+     * default request options
+     */
+    private $request_options;
 
     /**
      * @var \GuzzleHttp\Client
      */
     private $guzzle_client;
 
-    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com")
+    /**
+     * SwiftReachApi constructor.
+     * @param $api_key
+     * @param string $base_url
+     * @param array $request_options
+     */
+    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com", array $request_options = [])
     {
+        $default_options = $this->getDefaultRequestOptions();
+
+        $request_options = array_merge(
+            $default_options,
+            $request_options
+        );
+
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
+        $this->setRequestOptions($request_options);
 
         $this->guzzle_client = new Client(
             array(
-                "defaults" => array(
-                    "timeout"         => 30,
-                    "connect_timeout" => 30
-                )
+                "defaults" => $default_options
             )
         );
     }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultRequestOptions()
+    {
+        $default_options = [
+            "timeout"         => 5,
+            "connect_timeout" => 5,
+        ];
+        return $default_options;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  Start Email Functions
     //-----------------------------------------------------------------------------------------------------------------
@@ -550,14 +579,12 @@ class SwiftReachApi
 
     private function restAction($action, $url, $curl_opts)
     {
+        $request_options = $this->request_options;
+        $request_options['config']['curl'] = $curl_opts;
         try {
             return $this->getGuzzleClient()->$action(
                 $url,
-                array(
-                    'config' => array(
-                        'curl' => $curl_opts
-                    )
-                )
+                $request_options
             );
         } catch (ClientException $e) {
             $json = json_decode($e->getResponse()->getBody(), true);
@@ -617,6 +644,32 @@ class SwiftReachApi
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
         return $this->api_key;
+    }
+
+    /**
+     * @param array $request_options
+     * @return SwiftReachApi
+     * @throws SwiftReachException
+     */
+    public function setRequestOptions(array $request_options)
+    {
+        $this->request_options = $request_options;
+        if (empty($request_options)) {
+            throw new SwiftReachException("Defaults array is not a valid array.");
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     * @throws SwiftReachException
+     */
+    public function getRequestOptions()
+    {
+        if (empty($this->request_options)) {
+            throw new SwiftReachException("Defaults array was not set.");
+        }
+        return $this->request_options;
     }
 
     /**
