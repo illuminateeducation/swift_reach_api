@@ -579,14 +579,12 @@ class SwiftReachApi
 
     private function restAction($action, $url, $curl_opts)
     {
+        $request_options = $this->request_options;
+        $request_options['config']['curl'] = $curl_opts;
         try {
             return $this->getGuzzleClient()->$action(
                 $url,
-                array(
-                    'config' => array(
-                        'curl' => $curl_opts
-                    )
-                )
+                $request_options
             );
         } catch (ClientException $e) {
             $json = json_decode($e->getResponse()->getBody(), true);
