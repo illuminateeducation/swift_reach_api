@@ -4,15 +4,18 @@ namespace Ied\SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\ClientException;
+use Ied\SwiftReachApi\Contact\ContactArray;
+use Ied\SwiftReachApi\Email\EmailContent;
 use Ied\SwiftReachApi\Email\EmailMessage;
 use Ied\SwiftReachApi\Email\SimpleEmailMessage;
 use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Report\AlertCampaignProgress;
+use Ied\SwiftReachApi\Sms\SmsContent;
+use Ied\SwiftReachApi\Sms\SmsMessage;
 use Ied\SwiftReachApi\Voice\AbstractVoiceMessage;
 use Ied\SwiftReachApi\Voice\MessageProfile;
 use Ied\SwiftReachApi\Voice\SimpleVoiceMessage;
-use Ied\SwiftReachApi\Contact\ContactArray;
 use Ied\SwiftReachApi\Voice\VoiceAlertContent;
 use Ied\SwiftReachApi\Voice\VoiceMessage;
 
@@ -30,26 +33,55 @@ class SwiftReachApi
      */
     private $base_url;
 
+    /**
+     * @var array
+     * default request options
+     */
+    private $request_options;
 
     /**
      * @var \GuzzleHttp\Client
      */
     private $guzzle_client;
 
-    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com")
+    /**
+     * SwiftReachApi constructor.
+     * @param $api_key
+     * @param string $base_url
+     * @param array $request_options
+     */
+    public function __construct($api_key, $base_url = "http://api.v4.swiftreach.com", array $request_options = [])
     {
+        $default_options = $this->getDefaultRequestOptions();
+
+        $request_options = array_merge(
+            $default_options,
+            $request_options
+        );
+
         $this->setApiKey($api_key);
         $this->setBaseUrl($base_url);
+        $this->setRequestOptions($request_options);
 
         $this->guzzle_client = new Client(
             array(
-                "defaults" => array(
-                    "timeout"         => 30,
-                    "connect_timeout" => 30
-                )
+                "defaults" => $default_options
             )
         );
     }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultRequestOptions()
+    {
+        $default_options = [
+            "timeout"         => 5,
+            "connect_timeout" => 5,
+        ];
+        return $default_options;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  Start Email Functions
     //-----------------------------------------------------------------------------------------------------------------
@@ -81,8 +113,45 @@ class SwiftReachApi
         //test for empty fields
         $email_message->requiredFieldsSet();
 
-        $response = $this->post($this->getBaseUrl() . $path, $email_message->toJson());
-        return $response->getBody();
+        return $this->post($this->getBaseUrl() . $path, $email_message->toJson())->json();
+    }
+
+    public function updateEmailMessage($email_code, EmailMessage $email_message)
+    {
+        $path = "/api/Messages/Email/Update/$email_code";
+
+        //test for empty fields
+        $email_message->requiredFieldsSet();
+
+        return $this->put($this->getBaseUrl() . $path, $email_message->toJson())->json();
+    }
+
+    /**
+     * @param $email_code
+     * @return bool
+     * @throws SwiftReachException
+     */
+    public function deleteEmailMessage($email_code)
+    {
+        $url = $this->base_url . "/api/Messages/Email/Delete/" . $email_code;
+
+        return $this->delete($url);
+    }
+
+    public function sendAlertToContacts(ContactArray $contacts, $voice_code = 0, $sms_code = 0, $email_code = 0)
+    {
+        $url_parts = [
+            'TaskName'  => uniqid(),
+            'VoiceCode' => $voice_code,
+            'FaxCode'   => 0,
+            'SMSCode'   => $sms_code,
+            'EmailCode' => $email_code,
+            'PagerCode' => 0,
+        ];
+
+        $url = '/api/Alerts/Send/' . implode('/', $url_parts);
+
+        return $this->post($this->getBaseUrl() . $url, $contacts->toJson())->json();
     }
 
     public function sentEmailToArrayOfConatcts(EmailMessage $email_message, ContactArray $contacts)
@@ -112,6 +181,18 @@ class SwiftReachApi
         $em->populateFromArray($a);
         return $em;
     }
+
+    public function textToEmailSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Email/Helpers/TextToEmailSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+
+        $emailMessage = New EmailContent();
+        $emailMessage->populateFromArray(["Body" => $textSources]);
+
+        return $emailMessage->getBody();
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Email
     //-----------------------------------------------------------------------------------------------------------------
@@ -266,9 +347,120 @@ class SwiftReachApi
         return $vac;
     }
 
+    public function updateVoiceMessage($voice_code, VoiceMessage $voice_message)
+    {
+        if(!$voice_message->getVoiceCode()) {
+            throw new SwiftReachException('Voice code is required in the body of the API');
+        }
+
+        $url = $this->getBaseUrl() . "/api/Messages/Voice/Update/".$voice_code;
+        $json = $this->put($url, $voice_message->toJson())->json();
+
+        return $json;
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     //  End Voice
     //-----------------------------------------------------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //  Start sms Functions
+    //-----------------------------------------------------------------------------------------------------------------
+    public function createSmsMessage(SmsMessage $sms_message)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Create";
+        $json = $this->post($url, $sms_message->toJson())->json();
+
+        return $json;
+    }
+
+    public function getSmsMessage($sms_code)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/".$sms_code;
+        $json = $this->get($url)->json();
+
+        return $json;
+    }
+
+    public function updateSmsMessage($sms_code, SmsMessage $sms_message)
+    {
+        if(!$sms_message->getSmsCode()) {
+            throw new SwiftReachException('SMS code is required in the body of the API');
+        }
+
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Update/".$sms_code;
+        $json = $this->put($url, $sms_message->toJson())->json();
+
+        return $json;
+    }
+
+    /**
+     * @param $sms_code
+     * @return bool
+     * @throws SwiftReachException
+     */
+    public function deleteSmsMessage($sms_code)
+    {
+        $url = $this->base_url . "/api/Messages/Text/Delete/" . $sms_code;
+
+        return $this->delete($url);
+    }
+
+    public function textToSmsSourceArrayHelper($text)
+    {
+        $url = $this->getBaseUrl() . "/api/Messages/Text/Helpers/TextToSMSSourceObject";
+        $textSources = $this->post($url, trim(json_encode([$text => '']),"{}"))->json();
+        
+        $smsContent = New SmsContent();
+        $smsContent->populateFromArray(["Body" => $textSources]);
+
+        return $smsContent->getBody();
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //  End sms Functions
+    //-----------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @param $job_code
+     *
+     * @return AlertCampaignProgress
+     * @throws SwiftReachException
+     */
+    public function getAlertCampaignProgress($job_code)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Progress/".$job_code;
+        $responseBody = (string)$this->get($url)->getBody();
+
+        if (empty($responseBody)) {
+            throw new SwiftReachException('Unable to retrieve progress for job_code: '. $job_code);
+        }
+
+        $campaignReport = new AlertCampaignProgress();
+        $campaignReport->populateFromArray(json_decode($responseBody));
+
+        return $campaignReport;
+    }
+
+
+    public function downloadCallRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Voice/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
+
+    public function downloadSmsRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Text/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
+
+    public function downloadEmailRecords($job_code, $full_file_path)
+    {
+        $url = $this->getBaseUrl() . "/api/Alerts/Reports/Email/Download/".$job_code;
+        file_put_contents($full_file_path, $this->get($url)->getBody());
+    }
 
     /**
      * @param $url
@@ -315,7 +507,7 @@ class SwiftReachApi
             CURLOPT_POSTFIELDS     => $body,
             CURLOPT_HTTPHEADER     => $headers
         );
-        return $this->restAction('post', $url, $curl_opts);
+        return $this->restAction('put', $url, $curl_opts);
     }
 
     /**
@@ -388,14 +580,12 @@ class SwiftReachApi
 
     private function restAction($action, $url, $curl_opts)
     {
+        $request_options = $this->request_options;
+        $request_options['config']['curl'] = $curl_opts;
         try {
             return $this->getGuzzleClient()->$action(
                 $url,
-                array(
-                    'config' => array(
-                        'curl' => $curl_opts
-                    )
-                )
+                $request_options
             );
         } catch (ClientException $e) {
             $json = json_decode($e->getResponse()->getBody(), true);
@@ -455,6 +645,32 @@ class SwiftReachApi
             throw new SwiftReachException("Swift Reach Api key was not set.");
         }
         return $this->api_key;
+    }
+
+    /**
+     * @param array $request_options
+     * @return SwiftReachApi
+     * @throws SwiftReachException
+     */
+    public function setRequestOptions(array $request_options)
+    {
+        $this->request_options = $request_options;
+        if (empty($request_options)) {
+            throw new SwiftReachException("Defaults array is not a valid array.");
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     * @throws SwiftReachException
+     */
+    public function getRequestOptions()
+    {
+        if (empty($this->request_options)) {
+            throw new SwiftReachException("Defaults array was not set.");
+        }
+        return $this->request_options;
     }
 
     /**

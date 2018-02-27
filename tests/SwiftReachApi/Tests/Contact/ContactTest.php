@@ -7,7 +7,7 @@ use SwiftReachApi\Contact\KeyValue;
 use SwiftReachApi\Contact\Contact;
 use SwiftReachApi\Contact\ContactPhone;
 
-class VoiceContactTest extends \PHPUnit_Framework_TestCase
+class ContactTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -91,6 +91,14 @@ class VoiceContactTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($email, $this->c->setEmail($email)->getEmail());
     }
 
+    public function testSpokenLanguageAccess()
+    {
+        $expected_spoken_language = 'spanish';
+        $this->c->setSpokenLanguage($expected_spoken_language);
+
+        $this->assertEquals($expected_spoken_language, $this->c->getSpokenLanguage());
+    }
+
     /**
      * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
      */
@@ -100,4 +108,3 @@ class VoiceContactTest extends \PHPUnit_Framework_TestCase
         $this->c->setEmail($email);
     }
 }
- 

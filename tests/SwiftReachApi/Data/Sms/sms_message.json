@@ -1,0 +1,32 @@
+{
+  "CreateStamp": "2017-07-20T13:44:28.49",
+  "ChangeStamp": "2017-07-21T18:51:13.673",
+  "LastUsed": "2017-07-21T19:05:11.7",
+  "CreatedByUser": "SuperAdmin",
+  "ChangedByUser": "SuperAdmin",
+  "SMSCode": 11111111,
+  "Name": "Test SMS updated",
+  "Description": "Test SMS descriptio updatedn",
+  "FromName": "Some Distict name",
+  "FromAddress": "",
+  "DefaultSpokenLanguage": "English",
+  "Body": [
+    {
+      "SpokenLanguage": "English",
+      "Subject": "text subject",
+      "Body": [
+        {
+          "$type": "SwiftReach.Swift911.Core.Messages.SMS.SMS_TEXT_SOURCE_TEXT, SwiftReach.Swift911.Core",
+          "Text": "this is a small text message to test this is a cange what happens i ft his tha going to b ea longer message. This is something else that i.",
+          "TextType": 0
+        }
+      ]
+    }
+  ],
+  "ReplyType": 0,
+  "ReplyCriteria": "",
+  "ReplyWindow": 15,
+  "ReplyConfirmation": "",
+  "Visibility": 0,
+  "DeleteLocked": false
+}

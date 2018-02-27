@@ -2,7 +2,6 @@
 
 namespace Ied\SwiftReachApi\Contact;
 
-
 use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 use Ied\SwiftReachApi\Interfaces\JsonSerialize;
 use Ied\SwiftReachApi\Exceptions\SwiftReachException;
@@ -10,31 +9,34 @@ use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 class Contact
     implements JsonSerialize, ArraySerialize
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $guid;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $phones;
 
-    /** @var  string email address */
+    /** @var string */
     private $email;
 
+    /** @var string */
+    private $sms_phone;
+
+    /** @var int */
+    private $sms_network = 0;
+
     /** @var array KeyValue */
-    private $user_defined_fields = array();
+    private $user_defined_fields = [];
+
+    /** @var string */
+    private $spoken_language = 'English';
 
     public function __construct($name, $guid = '')
     {
         $this->setName($name);
-        $this->phones = array();
+        $this->phones = [];
 
         // if guid isn't set generate it
         if ($guid == '') {
@@ -50,10 +52,10 @@ class Contact
      */
     public function generateGuid()
     {
-        mt_srand((double)microtime() * 10000);//optional for php 4.2.0 and up.
+        mt_srand((double) microtime() * 10000);//optional for php 4.2.0 and up.
         $charid = strtoupper(md5(uniqid(rand(), true)));
         $hyphen = chr(45);// "-"
-        $uuid = substr($charid, 0, 8) . $hyphen
+        $uuid   = substr($charid, 0, 8) . $hyphen
             . substr($charid, 8, 4) . $hyphen
             . substr($charid, 12, 4) . $hyphen
             . substr($charid, 16, 4) . $hyphen
@@ -63,18 +65,23 @@ class Contact
     }
 
     /**
-     * @return string Json Object serialized
+     * @return array Json Object serialized
      */
     public function toArray()
     {
-        $a = array(
+        $a = [
             "EntityName" => $this->getName(),
             "EntityGuid" => $this->getGuid(),
-        );
+        ];
 
         // add email
         if ($this->getEmail()) {
             $a["Email"] = $this->getEmail();
+        }
+
+        if ($this->getSmsPhone()) {
+            $a["SMSPhone"]   = $this->getSmsPhone();
+            $a["SMSNetwork"] = $this->getSmsNetwork();
         }
 
         // add the phones
@@ -84,6 +91,8 @@ class Contact
                 $a["Phones"][] = $p->toArray();
             }
         }
+
+        $a['SpokenLanguage'] = $this->getSpokenLanguage();
 
         // add the user defined fields
         if (count($this->getUserDefinedFields())) {
@@ -105,6 +114,11 @@ class Contact
         return json_encode($this->toArray());
     }
 
+    /**
+     * @param $guid
+     *
+     * @return bool
+     */
     public function validateGuid($guid)
     {
         return preg_match('/^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/', $guid) == 1;
@@ -112,6 +126,9 @@ class Contact
 
     /**
      * @param string $guid
+     *
+     * @return Contact
+     * @throws SwiftReachException
      */
     public function setGuid($guid)
     {
@@ -133,11 +150,13 @@ class Contact
 
     /**
      * @param string $name
-     * @return $this
+     *
+     * @return Contact
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -151,11 +170,12 @@ class Contact
 
     /**
      * @param array $phones
-     * @return $this
+     *
+     * @return Contact
      */
     public function setPhones($phones)
     {
-        $this->phones = array();
+        $this->phones = [];
         foreach ($phones as $p) {
             $this->addPhone($p);
         }
@@ -165,11 +185,13 @@ class Contact
 
     /**
      * @param ContactPhone $phone
-     * @return $this
+     *
+     * @return Contact
      */
     public function addPhone(ContactPhone $phone)
     {
         $this->phones[] = $phone;
+
         return $this;
     }
 
@@ -191,7 +213,9 @@ class Contact
 
     /**
      * @param string $email
-     * @return $this
+     *
+     * @return Contact
+     * @throws SwiftReachException
      */
     public function setEmail($email)
     {
@@ -204,6 +228,47 @@ class Contact
     }
 
     /**
+     * @return string
+     */
+    public function getSmsPhone()
+    {
+        return $this->sms_phone;
+    }
+
+    /**
+     * @param string $sms_phone
+     *
+     * @return Contact
+     */
+    public function setSmsPhone($sms_phone)
+    {
+        $this->sms_phone = $sms_phone;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSmsNetwork()
+    {
+        return $this->sms_network;
+    }
+
+    /**
+     * @param int $sms_network
+     *
+     * @return Contact
+     */
+    public function setSmsNetwork($sms_network)
+    {
+        $this->sms_network = $sms_network;
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      */
     public function getUserDefinedFields()
@@ -213,10 +278,12 @@ class Contact
 
     /**
      * @param array $user_defined_fields
+     *
+     * @return Contact
      */
     public function setUserDefinedFields($user_defined_fields)
     {
-        $this->user_defined_fields = array();
+        $this->user_defined_fields = [];
         foreach ($user_defined_fields as $udf) {
             $this->addUserDefinedField($udf);
         }
@@ -226,11 +293,32 @@ class Contact
 
     /**
      * @param KeyValue $user_defined_fields
-     * @return $this
+     *
+     * @return Contact
      */
     public function addUserDefinedField(KeyValue $user_defined_field)
     {
         $this->user_defined_fields[] = $user_defined_field;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSpokenLanguage()
+    {
+        return $this->spoken_language;
+    }
+
+    /**
+     * @param string $spoken_langauge
+     *
+     * @return Contact
+     */
+    public function setSpokenLanguage($spoken_language)
+    {
+        $this->spoken_language = $spoken_language;
 
         return $this;
     }

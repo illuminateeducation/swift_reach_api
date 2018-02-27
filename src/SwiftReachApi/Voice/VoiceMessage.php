@@ -69,6 +69,7 @@ class VoiceMessage extends MessageProfile
     public function toJson()
     {
         $a = array(
+
             '$type'                           => "SwiftReach.Swift911.Core.Messages.Voice.Voice_Message, SwiftReach.Swift911.Core",
             "Name"                            => $this->getName(),
             "Description"                     => $this->getDescription(),
@@ -87,6 +88,10 @@ class VoiceMessage extends MessageProfile
             "EnableWaterfall"                 => $this->isEnableWaterfall(),
             "VoiceType"                       => $this->getVoiceType(),
         );
+
+        if ($this->getVoiceCode()) {
+            $a['VoiceCode'] = $this->getVoiceCode();
+        }
 
         $a["ContentProfile"] = array();
         foreach ($this->getContentProfiles() as $cp) {

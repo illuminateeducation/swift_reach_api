@@ -5,6 +5,7 @@ namespace SwiftReachApi\Tests;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Stream\Stream;
+use SwiftReachApi\Report\AlertCampaignProgress;
 use SwiftReachApi\SwiftReachApi;
 use SwiftReachApi\Voice\SimpleVoiceMessage;
 use SwiftReachApi\Contact\Contact;
@@ -102,6 +103,16 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $sra = new SwiftReachApi($key, $base_url);
         $this->assertEquals($key, $sra->getApiKey());
         $this->assertEquals($base_url, $sra->getBaseUrl());
+
+
+        $request_options = [
+            'timeout'         => 10,
+            'connect_timeout' => 15,
+        ];
+        $sra = new SwiftReachApi($key, $base_url, $request_options);
+        $this->assertEquals($key, $sra->getApiKey());
+        $this->assertEquals($base_url, $sra->getBaseUrl());
+        $this->assertEquals($request_options, $sra->getRequestOptions());
     }
 
     public function testAccessApiKey()
@@ -361,13 +372,40 @@ class SwiftReachApiTest extends \PHPUnit_Framework_TestCase {
         $this->mockExceptions([new RequestException("failed", new Request('GET', 'http://example.com'))]);
         $svm = $this->sra->getHotlineList();
     }
-    /*
-    public function testGetMessageProfile()
+
+
+    /**
+     * @expectedException \SwiftReachApi\Exceptions\SwiftReachException
+     */
+    public function testGetBadCampaignReport()
     {
-        $this->mockResponses([new Response(200, array(), Stream::factory(file_get_contents(__DIR__."/../Data/message_profile.json")))]);
-        $voice_code = 123456;
-        $this->assertEquals(get_class($this->sra->getMessageProfile($voice_code)),  'SwiftReachApi\Voice\MessageProfile');
+        //set up mock
+        $mock = new Mock(array(
+            new Response(200, array(), Stream::factory(''))
+        ));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+
+        $this->sra->setGuzzleClient($client);
+
+        $this->sra->getAlertCampaignProgress('bad-job-code');
     }
-    */
+
+
+    public function testGetCampaignReport()
+    {
+        //set up mock
+        $mock = new Mock(array(
+            new Response(200, array(), Stream::factory(file_get_contents(__DIR__."/../Data/Report/alert_campaign_progress.good.json")))
+        ));
+        $client = new Client();
+        $client->getEmitter()->attach($mock);
+
+        $this->sra->setGuzzleClient($client);
+
+        $result = $this->sra->getAlertCampaignProgress(000000);
+
+        $this->assertInstanceOf(AlertCampaignProgress::class, $result);
+    }
 
 }

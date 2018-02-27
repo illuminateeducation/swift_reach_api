@@ -98,6 +98,8 @@ class MessageProfile extends AbstractVoiceMessage
      */
     public function requiredFieldsSet()
     {
+        // if there are required fields and they aren't set then the function should throw and exception
+        // this class doesn't have any require fields.
     }
 
     public function populateFromArray($a)
