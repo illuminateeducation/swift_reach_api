@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftReachApi\Email\EmailTextSource;
+namespace Ied\SwiftReachApi\Email\EmailTextSource;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 class AutoFieldEmailTextSource extends AbstractEmailTextSource
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace SwiftReachApi\Contact;
+namespace Ied\SwiftReachApi\Contact;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 class ContactPhone implements ArraySerialize
 {

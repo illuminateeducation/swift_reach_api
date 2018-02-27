@@ -6,10 +6,10 @@
  * Time: 10:32 AM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Contact\ContactArray;
+use Ied\SwiftReachApi\Contact\ContactArray;
 
 /**
  * Class VoiceContactArray

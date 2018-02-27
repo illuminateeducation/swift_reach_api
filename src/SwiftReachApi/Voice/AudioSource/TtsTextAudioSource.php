@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftReachApi\Voice\AudioSource;
+namespace Ied\SwiftReachApi\Voice\AudioSource;
 
 
 class TtsTextAudioSource extends AbstractAudioSource

@@ -6,16 +6,16 @@
  * Time: 12:25 PM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\ArraySerialize;
-use SwiftReachApi\Voice\AudioSource\AbstractAudioSource;
-use SwiftReachApi\Voice\AudioSource\TtsFieldAudioSource;
-use SwiftReachApi\Voice\AudioSource\TtsTextAudioSource;
-use SwiftReachApi\Voice\AudioSource\TtsUserDefinedFieldAudioSource;
-use SwiftReachApi\Voice\AudioSource\VoiceAudioSource;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Voice\AudioSource\AbstractAudioSource;
+use Ied\SwiftReachApi\Voice\AudioSource\TtsFieldAudioSource;
+use Ied\SwiftReachApi\Voice\AudioSource\TtsTextAudioSource;
+use Ied\SwiftReachApi\Voice\AudioSource\TtsUserDefinedFieldAudioSource;
+use Ied\SwiftReachApi\Voice\AudioSource\VoiceAudioSource;
 
 class VoiceAlertContent
     implements ArraySerialize

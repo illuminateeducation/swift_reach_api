@@ -6,10 +6,10 @@
  * Time: 5:29 PM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Contact\Contact;
+use Ied\SwiftReachApi\Contact\Contact;
 
 
 /**

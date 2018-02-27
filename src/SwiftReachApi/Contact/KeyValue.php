@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftReachApi\Contact;
+namespace Ied\SwiftReachApi\Contact;
 
 
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 class KeyValue
     implements ArraySerialize

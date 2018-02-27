@@ -6,10 +6,10 @@
  * Time: 5:03 PM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 class VoiceMessage extends MessageProfile
 {

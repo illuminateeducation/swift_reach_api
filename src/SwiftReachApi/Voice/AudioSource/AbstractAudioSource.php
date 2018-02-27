@@ -6,10 +6,10 @@
  * Time: 12:32 PM
  */
 
-namespace SwiftReachApi\Voice\AudioSource;
+namespace Ied\SwiftReachApi\Voice\AudioSource;
 
 
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 abstract class AbstractAudioSource
     implements ArraySerialize

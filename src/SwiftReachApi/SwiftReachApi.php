@@ -1,22 +1,23 @@
 <?php
-namespace SwiftReachApi;
+
+namespace Ied\SwiftReachApi;
 
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use SwiftReachApi\Contact\ContactArray;
-use SwiftReachApi\Email\EmailContent;
-use SwiftReachApi\Email\EmailMessage;
-use SwiftReachApi\Email\SimpleEmailMessage;
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Report\AlertCampaignProgress;
-use SwiftReachApi\Sms\SmsContent;
-use SwiftReachApi\Sms\SmsMessage;
-use SwiftReachApi\Voice\AbstractVoiceMessage;
-use SwiftReachApi\Voice\MessageProfile;
-use SwiftReachApi\Voice\SimpleVoiceMessage;
-use SwiftReachApi\Voice\VoiceAlertContent;
-use SwiftReachApi\Voice\VoiceMessage;
+use Ied\SwiftReachApi\Contact\ContactArray;
+use Ied\SwiftReachApi\Email\EmailContent;
+use Ied\SwiftReachApi\Email\EmailMessage;
+use Ied\SwiftReachApi\Email\SimpleEmailMessage;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Report\AlertCampaignProgress;
+use Ied\SwiftReachApi\Sms\SmsContent;
+use Ied\SwiftReachApi\Sms\SmsMessage;
+use Ied\SwiftReachApi\Voice\AbstractVoiceMessage;
+use Ied\SwiftReachApi\Voice\MessageProfile;
+use Ied\SwiftReachApi\Voice\SimpleVoiceMessage;
+use Ied\SwiftReachApi\Voice\VoiceAlertContent;
+use Ied\SwiftReachApi\Voice\VoiceMessage;
 
 class SwiftReachApi
 {

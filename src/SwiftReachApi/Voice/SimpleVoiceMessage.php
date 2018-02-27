@@ -6,10 +6,10 @@
  * Time: 9:07 AM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\JsonSerialize;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\JsonSerialize;
 
 class SimpleVoiceMessage
     extends AbstractVoiceMessage
