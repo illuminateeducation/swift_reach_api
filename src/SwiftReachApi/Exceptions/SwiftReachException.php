@@ -6,7 +6,7 @@
  * Time: 9:20 AM
  */
 
-namespace SwiftReachApi\Exceptions;
+namespace Ied\SwiftReachApi\Exceptions;
 
 
 class SwiftReachException extends \Exception

@@ -6,11 +6,11 @@
  * Time: 11:22 AM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
-use SwiftReachApi\Interfaces\JsonSerialize;
-use SwiftReachApi\Interfaces\ArraySerialize;
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\JsonSerialize;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 abstract class AbstractVoiceMessage
     implements JsonSerialize

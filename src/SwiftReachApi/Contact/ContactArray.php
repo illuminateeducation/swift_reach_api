@@ -1,10 +1,10 @@
 <?php
 
-namespace SwiftReachApi\Contact;
+namespace Ied\SwiftReachApi\Contact;
 
-use SwiftReachApi\Interfaces\ArraySerialize;
-use SwiftReachApi\Interfaces\JsonSerialize;
-use SwiftReachApi\Contact\Contact;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Interfaces\JsonSerialize;
+use Ied\SwiftReachApi\Contact\Contact;
 
 class ContactArray
     implements JsonSerialize, ArraySerialize

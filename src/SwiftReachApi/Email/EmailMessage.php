@@ -6,10 +6,10 @@
  * Time: 4:47 PM
  */
 
-namespace SwiftReachApi\Email;
+namespace Ied\SwiftReachApi\Email;
 
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\JsonSerialize;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\JsonSerialize;
 
 
 class EmailMessage implements JsonSerialize

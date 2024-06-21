@@ -6,12 +6,12 @@
  * Time: 9:49 AM
  */
 
-namespace SwiftReachApi\Voice;
+namespace Ied\SwiftReachApi\Voice;
 
 
-use SwiftReachApi\Contact\ContactPhone;
-use SwiftReachApi\Exceptions\SwiftReachException;
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Contact\ContactPhone;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 /**
  * Class VoiceContactPhone

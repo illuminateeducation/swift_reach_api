@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftReachApi\Email\EmailTextSource;
+namespace Ied\SwiftReachApi\Email\EmailTextSource;
 
 
 class TextEmailTextSource extends AbstractEmailTextSource

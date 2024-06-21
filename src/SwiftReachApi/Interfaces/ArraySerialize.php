@@ -6,7 +6,7 @@
  * Time: 9:12 AM
  */
 
-namespace SwiftReachApi\Interfaces;
+namespace Ied\SwiftReachApi\Interfaces;
 
 
 interface ArraySerialize

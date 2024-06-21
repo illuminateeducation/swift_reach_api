@@ -6,10 +6,10 @@
  * Time: 12:32 PM
  */
 
-namespace SwiftReachApi\Email\EmailTextSource;
+namespace Ied\SwiftReachApi\Email\EmailTextSource;
 
 
-use SwiftReachApi\Interfaces\ArraySerialize;
+use Ied\SwiftReachApi\Interfaces\ArraySerialize;
 
 abstract class AbstractEmailTextSource
     implements ArraySerialize

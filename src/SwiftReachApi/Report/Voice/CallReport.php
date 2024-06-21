@@ -6,10 +6,10 @@
  * Time: 10:12 AM
  */
 
-namespace SwiftReachApi\Report\Voice;
+namespace Ied\SwiftReachApi\Report\Voice;
 
 
-use SwiftReachApi\Exceptions\SwiftReachException;
+use Ied\SwiftReachApi\Exceptions\SwiftReachException;
 
 class CallReport
 {
